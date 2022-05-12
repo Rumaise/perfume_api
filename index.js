@@ -27,7 +27,7 @@ const logger = winston.createLogger({
 app.use("/api", categoryRoute);
 //connect to mongodb
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGOURL)
   .then(() => {
     logger.log("info", "connected to mongodb atlas");
   })
