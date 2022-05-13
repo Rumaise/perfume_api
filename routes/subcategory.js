@@ -6,7 +6,7 @@ const { SubCategory, validateSubCategory } = require("../models/subcategory");
 //POST : CREATE A NEW  SUB CATEGORY
 router.post("/createsubcategory", async (req, res) => {
   const error = await validateSubCategory(req.body);
-  if (error.message)
+  if (error.message)  
     res.status(400).send({
       status: 0,
       data: error.message,

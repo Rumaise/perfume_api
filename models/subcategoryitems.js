@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const yup = require("yup");
 
 // sub category schema
-const SubCategorySchema = new mongoose.Schema({
-  category_id: {
+const SubCategoryItemsSchema = new mongoose.Schema({
+  sub_category_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "category",
+    ref: "subcategory",
     required: true,
   },
-  sub_category_name: {
+  item_name: {
     type: String,
     required: true,
     minlength: 3,
@@ -36,16 +36,16 @@ const SubCategorySchema = new mongoose.Schema({
   },
 });
 
-const validateSubCategory = (subcategory) => {
+const validateSubCategoryItems = (subcategoryitems) => {
   const schema = yup.object().shape({
-    category_id: yup.string().required(),
-    sub_category_name: yup.string().required().min(3).max(50),
+    sub_category_id: yup.string().required(),
+    item_name: yup.string().required().min(3).max(50),
     created_by: yup.string().required(),
   });
 
   return schema
-    .validate(subcategory)
-    .then((subcategory) => subcategory)
+    .validate(subcategoryitems)
+    .then((subcategoryitems) => subcategoryitems)
     .catch((error) => {
       return {
         message: error.message,
@@ -53,5 +53,8 @@ const validateSubCategory = (subcategory) => {
     });
 };
 
-exports.SubCategory = new mongoose.model("subcategory", SubCategorySchema);
-exports.validateSubCategory = validateSubCategory;
+exports.SubCategoryItems = new mongoose.model(
+  "subcategoryitems",
+  SubCategoryItemsSchema
+);
+exports.validateSubCategoryItems = validateSubCategoryItems;

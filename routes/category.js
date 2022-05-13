@@ -51,6 +51,56 @@ router.get("/list", (req, res) => {
     });
 });
 
+// GET ALL RECORDS JOINED
+router.get("/listall", (req, res) => {
+  Category.aggregate([
+    {
+      $lookup: {
+        from: "subcategories",
+        as: "subcategory",
+        let: { category_id: "$_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$category_id", "$$category_id"] } },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$subcategories",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "subcategoryitems",
+        as: "subcategoryitems",
+        let: { sub_category_id: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$sub_category_id", "$$sub_category_id"] },
+            },
+          },
+        ],
+      },
+    },
+  ])
+    .then((category) =>
+      res.send({
+        status: 1,
+        data: category,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET THE CATEGORY BY ID
 router.get("/:id", async (req, res) => {
   const categorydetails = await Category.findById(req.params.id);
