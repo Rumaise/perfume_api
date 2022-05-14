@@ -42,8 +42,25 @@ router.post("/createcustomer", async (req, res) => {
     });
 });
 
-//GET ALL CUSTOMERS
+//SEARCH CUSTOMER BY PHONE
+router.get("/searchcustomer/:term", (req, res) => {
+  console.log(req.params.term);
+  Customer.find({ phone: { $regex: ".*" + req.params.term + ".*" } })
+    .then((customer) =>
+      res.send({
+        status: 1,
+        data: customer,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
 
+//GET ALL CUSTOMERS
 router.get("/customerslist", (req, res) => {
   Customer.find()
     .then((customer) =>
