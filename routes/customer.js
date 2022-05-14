@@ -1,29 +1,37 @@
 const express = require("express");
-const subcategory = require("../models/subcategory");
+const customer = require("../models/customer");
 const router = express.Router();
-const { SubCategory, validateSubCategory } = require("../models/subcategory");
+const { Customer, validateCustomer } = require("../models/customer");
 
-//POST : CREATE A NEW  SUB CATEGORY
-router.post("/createsubcategory", async (req, res) => {
-  const error = await validateSubCategory(req.body);
+//POST : CREATE A NEW  CUSTOMER
+router.post("/createcustomer", async (req, res) => {
+  const error = await validateCustomer(req.body);
   if (error.message)
     res.status(400).send({
       status: 0,
       data: error.message,
     });
-  var subcategory = new SubCategory({
-    category_id: req.body.category_id,
-    sub_category_name: req.body.sub_category_name,
+  var customer = new Customer({
+    salutation: req.body.salutation,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
+    phone: req.body.phone,
+    location: req.body.location,
+    companyname: req.body.companyname,
+    address: req.body.address,
+    trn: req.body.trn,
+    type: req.body.type,
     created_by: req.body.created_by,
     modified_by: req.body.modified_by,
   });
 
-  subcategory
+  customer
     .save()
-    .then((subcategory) => {
+    .then((customer) => {
       res.send({
         status: 1,
-        data: subcategory,
+        data: customer,
       });
     })
     .catch((error) => {
@@ -34,14 +42,14 @@ router.post("/createsubcategory", async (req, res) => {
     });
 });
 
-//GET ALL SUB CATEGORIES
+//GET ALL CUSTOMERS
 
-router.get("/subcategorylist", (req, res) => {
-  SubCategory.find()
-    .then((subcategory) =>
+router.get("/customerslist", (req, res) => {
+  Customer.find()
+    .then((customer) =>
       res.send({
         status: 1,
-        data: subcategory,
+        data: customer,
       })
     )
     .catch((error) => {
@@ -52,7 +60,7 @@ router.get("/subcategorylist", (req, res) => {
     });
 });
 
-//GET THE SUB CATEGORY BY ID
+//GET THE CUSTOMER BY ID
 router.get("/:id", async (req, res) => {
   const subcategorydetails = await SubCategory.findById(req.params.id);
   if (!subcategorydetails)
@@ -68,35 +76,35 @@ router.get("/:id", async (req, res) => {
 
 //UPDATE SUB CATEGORY BASED ON ID
 router.put("/:id", async (req, res) => {
-  const subcategoryupdate = await SubCategory.findByIdAndUpdate(
+  const customerupdate = await Customer.findByIdAndUpdate(
     req.params.id,
     {
       modified_by: req.body.modified_by,
     },
     { new: true }
   );
-  if (!subcategoryupdate)
+  if (!customerupdate)
     res.status(404).send({
       status: 0,
-      data: "Sub Category Details Not Found",
+      data: "Customer Details Not Found",
     });
   res.send({
     status: 1,
-    data: subcategoryupdate,
+    data: customerupdate,
   });
 });
 
-//DELETE A SUB CATEGORY
+//DELETE A CUSTOMER
 router.delete("/:id", async (req, res) => {
-  const subcategorydelete = await SubCategory.findByIdAndRemove(req.params.id);
-  if (!subcategorydelete)
+  const customerdelete = await Customer.findByIdAndRemove(req.params.id);
+  if (!customerdelete)
     res.status(404).send({
       status: 0,
-      data: "Sub Category Details Not Found",
+      data: "Customer Details Not Found",
     });
   res.send({
     status: 1,
-    data: subcategorydelete,
+    data: customerdelete,
   });
 });
 

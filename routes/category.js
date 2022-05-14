@@ -52,7 +52,7 @@ router.get("/list", (req, res) => {
 });
 
 // GET ALL RECORDS JOINED
-router.get("/listall", (req, res) => {
+router.get("/loadallmaster", (req, res) => {
   Category.aggregate([
     {
       $lookup: {
@@ -63,6 +63,20 @@ router.get("/listall", (req, res) => {
           {
             $match: { $expr: { $eq: ["$category_id", "$$category_id"] } },
           },
+          {
+            $lookup: {
+              from: "subcategoryitems",
+              as: "subcategoryitemslist",
+              let: { sub_category_id: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$sub_category_id", "$$sub_category_id"] },
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -72,25 +86,11 @@ router.get("/listall", (req, res) => {
         preserveNullAndEmptyArrays: true,
       },
     },
-    {
-      $lookup: {
-        from: "subcategoryitems",
-        as: "subcategoryitems",
-        let: { sub_category_id: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: { $eq: ["$sub_category_id", "$$sub_category_id"] },
-            },
-          },
-        ],
-      },
-    },
   ])
-    .then((category) =>
+    .then((master) =>
       res.send({
         status: 1,
-        data: category,
+        data: master,
       })
     )
     .catch((error) => {

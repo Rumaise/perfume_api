@@ -7,6 +7,7 @@ require("dotenv").config();
 const categoryRoute = require("./routes/category");
 const subcategoryRoute = require("./routes/subcategory");
 const subcategoryitemsRoute = require("./routes/subcategoryitems");
+const customerRoute = require("./routes/customer");
 
 const PORT = process.env.PORT || 3000;
 
@@ -29,6 +30,8 @@ const logger = winston.createLogger({
 app.use("/api", categoryRoute);
 app.use("/subcategory", subcategoryRoute);
 app.use("/subcategoryitems", subcategoryitemsRoute);
+app.use("/customer", customerRoute);
+
 //connect to mongodb
 mongoose
   .connect(process.env.MONGOURL)
