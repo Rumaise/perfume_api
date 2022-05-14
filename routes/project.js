@@ -16,7 +16,7 @@ router.post("/createproject", async (req, res) => {
     customer_id: req.body.customer_id,
     referrence: req.body.referrence,
     brandname: req.body.brandname,
-    productname: productname,
+    productname: re.body.productname,
     producttype: req.body.producttype,
     variantname: req.body.variantname,
     created_by: req.body.created_by,
