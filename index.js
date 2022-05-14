@@ -8,6 +8,7 @@ const categoryRoute = require("./routes/category");
 const subcategoryRoute = require("./routes/subcategory");
 const subcategoryitemsRoute = require("./routes/subcategoryitems");
 const customerRoute = require("./routes/customer");
+const projectRoute = require("./routes/project");
 
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +32,7 @@ app.use("/api", categoryRoute);
 app.use("/subcategory", subcategoryRoute);
 app.use("/subcategoryitems", subcategoryitemsRoute);
 app.use("/customer", customerRoute);
+app.use("/project", projectRoute);
 
 //connect to mongodb
 mongoose
