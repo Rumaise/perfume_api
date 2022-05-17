@@ -138,12 +138,18 @@ router.get("/loadcategorybyid/:id", (req, res) => {
               ],
             },
           },
+
           {
             $project: {
               _id: 1,
               category_id: 1,
               sub_category_name: 1,
               subcategoryitemslist: 1,
+            },
+          },
+          {
+            $addFields: {
+              expand: false,
             },
           },
         ],
@@ -159,6 +165,7 @@ router.get("/loadcategorybyid/:id", (req, res) => {
         subcategory: 1,
       },
     },
+
     {
       $unwind: {
         path: "$subcategories",
