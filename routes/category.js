@@ -135,6 +135,11 @@ router.get("/loadcategorybyid/:id", (req, res) => {
                     item_name: 1,
                   },
                 },
+                {
+                  $addFields: {
+                    selected: false,
+                  },
+                },
               ],
             },
           },
@@ -150,6 +155,7 @@ router.get("/loadcategorybyid/:id", (req, res) => {
           {
             $addFields: {
               expand: false,
+              currentselected: 0,
             },
           },
         ],
