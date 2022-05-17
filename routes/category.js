@@ -128,10 +128,35 @@ router.get("/loadcategorybyid/:id", (req, res) => {
                     $expr: { $eq: ["$sub_category_id", "$$sub_category_id"] },
                   },
                 },
+                {
+                  $project: {
+                    _id: 1,
+                    sub_category_id: 1,
+                    item_name: 1,
+                  },
+                },
               ],
             },
           },
+          {
+            $project: {
+              _id: 1,
+              category_id: 1,
+              sub_category_name: 1,
+              subcategoryitemslist: 1,
+            },
+          },
         ],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        category_name: 1,
+        textfields: 1,
+        signature: 1,
+        remarks: 1,
+        subcategory: 1,
       },
     },
     {
