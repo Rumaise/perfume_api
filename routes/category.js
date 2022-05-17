@@ -1,4 +1,5 @@
 const express = require("express");
+const { default: mongoose } = require("mongoose");
 const category = require("../models/category");
 const router = express.Router();
 const { Category, validateCategory } = require("../models/category");
@@ -54,6 +55,59 @@ router.get("/list", (req, res) => {
 // GET ALL RECORDS JOINED
 router.get("/loadallmaster", (req, res) => {
   Category.aggregate([
+    {
+      $lookup: {
+        from: "subcategories",
+        as: "subcategory",
+        let: { category_id: "$_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$category_id", "$$category_id"] } },
+          },
+          {
+            $lookup: {
+              from: "subcategoryitems",
+              as: "subcategoryitemslist",
+              let: { sub_category_id: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$sub_category_id", "$$sub_category_id"] },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$subcategories",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ])
+    .then((master) =>
+      res.send({
+        status: 1,
+        data: master,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+// GET ALL RECORDS JOINED
+router.get("/loadcategorybyid/:id", (req, res) => {
+  Category.aggregate([
+    {
+      $match: { _id: { $eq: mongoose.Types.ObjectId(req.params.id) } },
+    },
     {
       $lookup: {
         from: "subcategories",

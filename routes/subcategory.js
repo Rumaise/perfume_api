@@ -52,6 +52,44 @@ router.get("/subcategorylist", (req, res) => {
     });
 });
 
+// LOAD ALL SUB CATEGORIES AND SUB CATEGORY ITEMS
+router.get("/loadsubcategoryanditems", (req, res) => {
+  SubCategory.aggregate([
+    {
+      $lookup: {
+        from: "subcategoryitems",
+        as: "items",
+        let: { sub_category_id: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$sub_category_id", "$$sub_category_id"] },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$subcategoryitems",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ])
+    .then((master) =>
+      res.send({
+        status: 1,
+        data: master,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET THE SUB CATEGORY BY ID
 router.get("/:id", async (req, res) => {
   const subcategorydetails = await SubCategory.findById(req.params.id);

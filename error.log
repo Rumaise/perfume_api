@@ -1,2 +1,5 @@
 {"code":"ECONNREFUSED","hostname":"_mongodb._tcp.cluster0.xfdw2.mongodb.net","level":"error","syscall":"querySrv"}
 {"code":"ECONNREFUSED","hostname":"_mongodb._tcp.cluster0.xfdw2.mongodb.net","level":"error","syscall":"querySrv"}
+{"code":"ECONNREFUSED","hostname":"_mongodb._tcp.cluster0.xfdw2.mongodb.net","level":"error","syscall":"querySrv"}
+{"code":"ECONNREFUSED","hostname":"_mongodb._tcp.cluster0.xfdw2.mongodb.net","level":"error","syscall":"querySrv"}
+{"code":"ECONNREFUSED","hostname":"_mongodb._tcp.cluster0.xfdw2.mongodb.net","level":"error","syscall":"querySrv"}
