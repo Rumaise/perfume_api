@@ -21,10 +21,7 @@ module.exports = {
   uploadDocument: (req, res) => {
     res.json({
       success: 1,
-      documenturl: req.file.path,
-      url: `http://${process.env.DB_HOST}:${process.env.PORT}/upload/images/${req.file.filename}`,
-      base: fs.readFileSync("upload/images/" + req.file.filename, "base64"),
-      contentType: req.file.mimetype,
+      documentpath: req.file.path,
     });
   },
 };
