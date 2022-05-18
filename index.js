@@ -9,6 +9,7 @@ const subcategoryRoute = require("./routes/subcategory");
 const subcategoryitemsRoute = require("./routes/subcategoryitems");
 const customerRoute = require("./routes/customer");
 const projectRoute = require("./routes/project");
+const uploadRoute = require("./routes/uploadimagerouter");
 
 const PORT = process.env.PORT || 3000;
 
@@ -27,6 +28,7 @@ const logger = winston.createLogger({
   ],
 });
 
+app.use("/upload/images", express.static("upload/images"));
 //routes
 app.use("/api", categoryRoute);
 app.use("/subcategory", subcategoryRoute);
@@ -34,6 +36,7 @@ app.use("/subcategoryitems", subcategoryitemsRoute);
 app.use("/customer", customerRoute);
 app.use("/project", projectRoute);
 
+app.use("/document", uploadRoute);
 //connect to mongodb
 mongoose
   .connect(process.env.MONGOURL)
