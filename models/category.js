@@ -10,6 +10,19 @@ const CategorySchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 50,
   },
+  textfields: [
+    {
+      type: String,
+    },
+  ],
+  image: {
+    type: Boolean,
+    default: false,
+  },
+  remarks: {
+    type: Boolean,
+    default: false,
+  },
   active: {
     type: String,
     enum: ["Y", "N"],

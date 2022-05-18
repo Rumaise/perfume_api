@@ -14,6 +14,9 @@ router.post("/create", async (req, res) => {
     });
   var category = new Category({
     category_name: req.body.category_name,
+    textfields: req.body.textfields,
+    image: req.body.image,
+    remarks: req.body.remarks,
     created_by: req.body.created_by,
     modified_by: req.body.modified_by,
   });
