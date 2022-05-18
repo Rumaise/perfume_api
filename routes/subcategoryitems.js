@@ -41,7 +41,7 @@ router.post("/createsubcategoryitem", async (req, res) => {
 
 router.get("/subcategoryitemslist", (req, res) => {
   SubCategoryItems.find()
-    .populate("sub_category_id")
+    // .populate("sub_category_id")
     .then((subcategoryitems) =>
       res.send({
         status: 1,
