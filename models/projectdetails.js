@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
-const { ProjectDetailSchema } = require("../models/projectdetails");
 
-//project main schema
-const ProjectMainSchema = new mongoose.Schema({
+//project details schema
+const ProjectDetailSchema = new mongoose.Schema({
   project_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "projects",
@@ -19,32 +18,19 @@ const ProjectMainSchema = new mongoose.Schema({
     ref: "category",
     required: true,
   },
-  detailname: {
-    type: String,
+  sub_category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "subcategory",
     required: true,
-    minlength: 3,
-    maxlength: 50,
   },
-  itemcode: {
-    type: String,
+  item_category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "subcategoryitems",
     required: true,
-    minlength: 3,
-    maxlength: 50,
-  },
-  volume: {
-    type: String,
   },
   remarks: {
     type: String,
   },
-  photolink: {
-    type: String,
-  },
-  details: [
-    {
-      type: ProjectDetailSchema,
-    },
-  ],
   active: {
     type: String,
     enum: ["Y", "N"],
@@ -67,19 +53,19 @@ const ProjectMainSchema = new mongoose.Schema({
   },
 });
 
-const validateProjectMain = (projectmain) => {
+const validateProjectDetails = (projectdetails) => {
   const schema = yup.object().shape({
     project_id: yup.string().required(),
     customer_id: yup.string().required(),
     main_category_id: yup.string().required(),
-    detailname: yup.string().required().min(3).max(50),
-    itemcode: yup.string().required().min(3).max(50),
+    sub_category_id: yup.string().required(),
+    item_category_id: yup.string().required(),
     created_by: yup.string().required(),
   });
 
   return schema
-    .validate(projectmain)
-    .then((projectmain) => projectmain)
+    .validate(projectdetails)
+    .then((projectdetails) => projectdetails)
     .catch((error) => {
       return {
         message: error.message,
@@ -87,5 +73,9 @@ const validateProjectMain = (projectmain) => {
     });
 };
 
-exports.ProjectMain = new mongoose.model("projectmain", ProjectMainSchema);
-exports.validateProjectMain = validateProjectMain;
+exports.ProjectDetailSchema = ProjectDetailSchema;
+exports.ProjectDetails = new mongoose.model(
+  "projectdetails",
+  ProjectDetailSchema
+);
+exports.validateProjectDetails = validateProjectDetails;
