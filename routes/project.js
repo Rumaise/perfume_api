@@ -57,6 +57,67 @@ router.get("/projectslist", (req, res) => {
     });
 });
 
+//GET THE PROJECT DETAILS ALONG WITH CUSTOMER DETAILS
+
+// GET ALL RECORDS JOINED
+router.get("/loadallprojectwithcustomerdetails", (req, res) => {
+  Project.aggregate([
+    {
+      $lookup: {
+        from: "customers",
+        as: "customerdetails",
+        let: { customer_id: "$customer_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$_id", "$$customer_id"] } },
+          },
+          {
+            $project: {
+              _id: 1,
+              firstname: 1,
+              lastname: 1,
+              phone: 1,
+              email: 1,
+              companyname: 1,
+              trn: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$customerdetails",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        customer_id: 1,
+        referrence: 1,
+        brandname: 1,
+        productname: 1,
+        producttype: 1,
+        variantname: 1,
+        customerdetails: 1,
+      },
+    },
+  ])
+    .then((projects) =>
+      res.send({
+        status: 1,
+        data: projects,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET THE PROJECT BY ID
 router.get("/project/:id", async (req, res) => {
   const projectdetails = await Project.findById(req.params.id);
