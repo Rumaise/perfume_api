@@ -94,6 +94,7 @@ const validateProject = (project) => {
     brandname: yup.string().required().min(3).max(50),
     productname: yup.string().required().min(3).max(50),
     variantname: yup.string().required().min(3).max(50),
+    quantity: yup.number().require(),
     created_by: yup.string().required(),
   });
 
