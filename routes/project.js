@@ -42,7 +42,7 @@ router.post("/createproject", async (req, res) => {
 //GET ALL PROJECTS
 
 router.get("/projectslist", (req, res) => {
-  Project.find()
+  Project.find({ completed: false })
     .then((project) =>
       res.send({
         status: 1,
