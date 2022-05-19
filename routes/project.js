@@ -138,6 +138,7 @@ router.put("/updateproject/:id", async (req, res) => {
     req.params.id,
     {
       modified_by: req.body.modified_by,
+      completed: req.body.completed,
     },
     { new: true }
   );

@@ -30,6 +30,7 @@ const logger = winston.createLogger({
 });
 
 app.use("/upload/images", express.static("upload/images"));
+
 //routes
 app.use("/api", categoryRoute);
 app.use("/subcategory", subcategoryRoute);
@@ -38,6 +39,7 @@ app.use("/customer", customerRoute);
 app.use("/project", projectRoute);
 app.use("/projectdetails", projectDetailsRoute);
 app.use("/document", uploadRoute);
+
 //connect to mongodb
 mongoose
   .connect(process.env.MONGOURL)

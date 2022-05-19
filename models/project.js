@@ -52,6 +52,10 @@ const ProjectSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
   active: {
     type: String,
     enum: ["Y", "N"],
