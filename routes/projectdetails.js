@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { ProjectMain, validateProjectMain } = require("../models/projectmain");
 const { ProjectDetails } = require("../models/projectdetails");
+const { Project, validateProject } = require("../models/project");
 
 //POST : CREATE A NEW PROJECT DETAILS
 
@@ -30,13 +31,29 @@ router.post("/createprojectdetails", async (req, res) => {
     .save()
     .then(async (projectmain) => {
       await ProjectDetails.insertMany(req.body.details)
-        .then((projectdetails) => {
-          res.send({
-            status: 1,
-            data: "Uploaded Successfully",
-            projectmain: projectmain,
-            projectdetails: projectdetails,
-          });
+        .then(async (projectdetails) => {
+          await Project.findByIdAndUpdate(
+            req.body.project_id,
+            {
+              $push: { categories_added: req.body.main_category_id },
+            },
+            { new: true }
+          )
+            .then((projectstatus) => {
+              res.send({
+                status: 1,
+                data: "Uploaded Successfully",
+                projectmain: projectmain,
+                projectdetails: projectdetails,
+                projectstatus: projectstatus,
+              });
+            })
+            .catch((error) => {
+              res.status(500).send({
+                status: 0,
+                data: error,
+              });
+            });
         })
         .catch((error) => {
           res.status(500).send({

@@ -158,6 +158,7 @@ router.put("/updateproject/:id", async (req, res) => {
     {
       modified_by: req.body.modified_by,
       completed: req.body.completed,
+      $push: { categories_added: req.body.category_id },
     },
     { new: true }
   );

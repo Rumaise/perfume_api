@@ -169,7 +169,7 @@ router.get("/loadcategorybyid/:id", (req, res) => {
         _id: 1,
         category_name: 1,
         textfields: 1,
-        signature: 1,
+        image: 1,
         remarks: 1,
         subcategory: 1,
       },
