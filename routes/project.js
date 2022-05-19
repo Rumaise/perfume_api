@@ -19,6 +19,9 @@ router.post("/createproject", async (req, res) => {
     productname: req.body.productname,
     producttype: req.body.producttype,
     variantname: req.body.variantname,
+    completed: req.body.completed,
+    categories_added: req.body.categories_added,
+    quantity: req.body.quantity,
     created_by: req.body.created_by,
     modified_by: req.body.modified_by,
   });
@@ -40,7 +43,6 @@ router.post("/createproject", async (req, res) => {
 });
 
 //GET ALL PROJECTS
-
 router.get("/projectslist", (req, res) => {
   Project.find({ completed: false })
     .then((project) =>

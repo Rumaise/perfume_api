@@ -56,6 +56,15 @@ const ProjectSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  categories_added: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
+  quantity: {
+    type: Number,
+    required: true,
+  },
   active: {
     type: String,
     enum: ["Y", "N"],
