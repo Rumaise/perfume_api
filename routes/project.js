@@ -57,8 +57,25 @@ router.get("/projectslist", (req, res) => {
     });
 });
 
-//GET THE PROJECT DETAILS ALONG WITH CUSTOMER DETAILS
+//api to get the collection count
+router.get("/projectslistcount", (req, res) => {
+  Project.find({ completed: false })
+    .count()
+    .then((project) =>
+      res.send({
+        status: 1,
+        data: project,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
 
+//GET THE PROJECT DETAILS ALONG WITH CUSTOMER DETAILS
 // GET ALL RECORDS JOINED
 router.get("/loadallprojectwithcustomerdetails", (req, res) => {
   Project.aggregate([
