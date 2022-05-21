@@ -33,4 +33,20 @@ router.post("/createusergroup", async (req, res) => {
     });
 });
 
+router.get("/usergroupslist", (req, res) => {
+  UserGroup.find()
+    .then((usergroups) =>
+      res.send({
+        status: 1,
+        data: usergroups,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 module.exports = router;
