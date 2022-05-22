@@ -60,10 +60,10 @@ router.post("/processdropdown", async (req, res) => {
       await processes.forEach((element) => {
         const data = {
           project_id: req.body.project_id,
+          created_by: req.body.created_by,
           process_id: element._id,
           process_name: element.process_name,
           selected: false,
-          created_by: req.body.created_by,
         };
         resultarray.push(data);
       });
