@@ -66,6 +66,7 @@ router.post("/processdropdown", async (req, res) => {
           process_name: element.process_name,
           selected: false,
         };
+        console.log(data);
         resultarray.push(data);
       });
       await res.send({
