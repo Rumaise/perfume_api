@@ -13,6 +13,8 @@ const uploadRoute = require("./routes/uploadimagerouter");
 const projectDetailsRoute = require("./routes/projectdetails");
 const userGroupRoute = require("./routes/usergroup");
 const userRoute = require("./routes/user");
+const processRoute = require("./routes/process");
+const projectProcessRoute = require("./routes/projectprocess");
 
 const PORT = process.env.PORT || 3000;
 
@@ -43,6 +45,8 @@ app.use("/projectdetails", projectDetailsRoute);
 app.use("/document", uploadRoute);
 app.use("/usergroup", userGroupRoute);
 app.use("/user", userRoute);
+app.use("/process", processRoute);
+app.use("/projectprocess", projectProcessRoute);
 
 //connect to mongodb
 mongoose

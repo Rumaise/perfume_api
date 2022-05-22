@@ -2,6 +2,7 @@ const express = require("express");
 const project = require("../models/project");
 const router = express.Router();
 const { Project, validateProject } = require("../models/project");
+const { Process } = require("../models/process");
 
 //POST : CREATE A NEW PROJECT
 
