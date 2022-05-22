@@ -53,15 +53,15 @@ router.get("/listprocess", (req, res) => {
     });
 });
 
-router.post("/processdropdown", async (req, res) => {
-  console.log(req.body.project_id);
+router.get("/processdropdown/:projectid", async (req, res) => {
+  console.log(req.params.projectid);
   await Process.find()
     .then(async (processes) => {
       var resultarray = [];
       await processes.forEach((element) => {
         const data = {
-          project_id: req.body.project_id,
-          created_by: req.body.created_by,
+          project_id: req.params.projectid,
+          // created_by: req.body.created_by,
           process_id: element._id,
           process_name: element.process_name,
           selected: false,
@@ -69,7 +69,7 @@ router.post("/processdropdown", async (req, res) => {
         console.log(data);
         resultarray.push(data);
       });
-      await res.send({
+      res.send({
         status: 1,
         data: resultarray,
       });

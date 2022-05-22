@@ -79,7 +79,7 @@ router.get("/customerslist", (req, res) => {
 
 //GET THE CUSTOMER BY ID
 router.get("/:id", async (req, res) => {
-  const subcategorydetails = await SubCategory.findById(req.params.id);
+  const subcategorydetails = await Customer.findById(req.params.id);
   if (!subcategorydetails)
     res.status(404).send({
       status: 0,
