@@ -2,10 +2,7 @@ const express = require("express");
 const project = require("../models/project");
 const router = express.Router();
 const { Project, validateProject } = require("../models/project");
-const {
-  ProjectProcess,
-  validateProjectProcess,
-} = require("../models/projectprocess");
+const { Process } = require("../models/process");
 
 //POST : CREATE A NEW PROJECT
 
@@ -32,21 +29,11 @@ router.post("/createproject", async (req, res) => {
 
   project
     .save()
-    .then(async (project) => {
-      await ProjectProcess.insertMany(req.body.processlist)
-        .then((projectprocess) => {
-          res.send({
-            status: 1,
-            data: project,
-            process: projectprocess,
-          });
-        })
-        .catch((error) => {
-          res.status(500).send({
-            status: 0,
-            data: error,
-          });
-        });
+    .then((project) => {
+      res.send({
+        status: 1,
+        data: project,
+      });
     })
     .catch((error) => {
       res.status(500).send({
