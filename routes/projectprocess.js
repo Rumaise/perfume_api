@@ -42,7 +42,7 @@ router.post("/createprojectprocess", async (req, res) => {
 
 //INSERT MULTIPLE PROJECT PROCESS
 router.post("/addprojectprocess", async (req, res) => {
-  const projectprocess = res.body.projectprocess;
+  const projectprocess = req.body.projectprocess;
   var projectprocesslist = [];
   await projectprocess.forEach(async (element) => {
     var data = {
