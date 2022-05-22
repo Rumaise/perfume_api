@@ -53,4 +53,29 @@ router.get("/listprocess", (req, res) => {
     });
 });
 
+router.get("/processdropdown", async (req, res) => {
+  await Process.find()
+    .then(async (processes) => {
+      var resultarray = [];
+      await processes.forEach((element) => {
+        const data = {
+          process_id: element._id,
+          process_name: element.process_name,
+          selected: false,
+        };
+        resultarray.push(data);
+      });
+      res.send({
+        status: 1,
+        data: resultarray,
+      });
+    })
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 module.exports = router;
