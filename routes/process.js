@@ -54,6 +54,7 @@ router.get("/listprocess", (req, res) => {
 });
 
 router.post("/processdropdown", async (req, res) => {
+  console.log(req.body.project_id);
   await Process.find()
     .then(async (processes) => {
       var resultarray = [];
@@ -67,7 +68,7 @@ router.post("/processdropdown", async (req, res) => {
         };
         resultarray.push(data);
       });
-      res.send({
+      await res.send({
         status: 1,
         data: resultarray,
       });
