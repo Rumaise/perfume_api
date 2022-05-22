@@ -53,15 +53,16 @@ router.get("/listprocess", (req, res) => {
     });
 });
 
-router.get("/processdropdown/:projectid", async (req, res) => {
+router.get("/processdropdown/:projectid/:createdby", async (req, res) => {
   console.log(req.params.projectid);
+  console.log(req.params.createdby);
   await Process.find()
     .then(async (processes) => {
       var resultarray = [];
       await processes.forEach((element) => {
         const data = {
           project_id: req.params.projectid,
-          // created_by: req.body.created_by,
+          created_by: req.params.createdby,
           process_id: element._id,
           process_name: element.process_name,
           selected: false,
