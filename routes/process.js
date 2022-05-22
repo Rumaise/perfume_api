@@ -53,15 +53,17 @@ router.get("/listprocess", (req, res) => {
     });
 });
 
-router.get("/processdropdown", async (req, res) => {
+router.post("/processdropdown", async (req, res) => {
   await Process.find()
     .then(async (processes) => {
       var resultarray = [];
       await processes.forEach((element) => {
         const data = {
+          project_id: req.body.project_id,
           process_id: element._id,
           process_name: element.process_name,
           selected: false,
+          created_by: req.body.created_by,
         };
         resultarray.push(data);
       });
