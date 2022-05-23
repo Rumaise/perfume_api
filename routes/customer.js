@@ -43,7 +43,7 @@ router.post("/createcustomer", async (req, res) => {
 });
 
 //SEARCH CUSTOMER BY PHONE
-router.get("/searchcustomer/:term", (req, res) => {
+router.get("/searchcustomer/:term?", (req, res) => {
   console.log(req.params.term);
   Customer.find({ phone: { $regex: ".*" + req.params.term + ".*" } })
     .then((customer) =>
