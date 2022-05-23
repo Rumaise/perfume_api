@@ -28,6 +28,10 @@ const ProjectProcessSchema = new mongoose.Schema({
     type: Date,
     default: addDays(7),
   },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
   remarks: {
     type: String,
   },

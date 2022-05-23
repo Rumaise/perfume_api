@@ -94,4 +94,117 @@ router.get("/listprojectprocess", (req, res) => {
     });
 });
 
+router.get("/processlistingbyenddate", (req, res) => {
+  ProjectProcess.aggregate([
+    {
+      $lookup: {
+        from: "projects",
+        as: "projectdetails",
+        let: { project_id: "$project_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$_id", "$$project_id"] } },
+          },
+          {
+            $project: {
+              customer_id: 1,
+              referrence: 1,
+              brandname: 1,
+              productname: 1,
+              completed: 1,
+              quantity: 1,
+              project_datetime: 1,
+              start_datetime: 1,
+              handover_datetime: 1,
+              approved_datetime: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "processes",
+        as: "processdetails",
+        let: { id: "$process_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$id"] },
+            },
+          },
+          {
+            $project: {
+              process_name: 1,
+              approvers: 1,
+              notify: 1,
+              mailstat: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        project_id: 1,
+        process_id: 1,
+        projectdetails: 1,
+        processdetails: 1,
+        day: {
+          $divide: [{ $subtract: ["$process_end_date", new Date()] }, 86400000],
+        },
+        process_start_date: {
+          $dateToString: { format: "%Y-%m-%d", date: "$process_started_date" },
+        },
+        process_end_date: {
+          $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
+        },
+        // duration: {
+        //   $subtract: [
+        //     new Date({
+        //       $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
+        //     }),
+        //     new Date("2022-05-30"),
+        //   ],
+        // },
+        // dayMonthYear: {
+        //   $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
+        // },
+      },
+    },
+    { $sort: { process_end_date: 1 } },
+
+    // { $limit: 2 },
+    // {
+    //   $lookup: {
+    //     from: "projectprocess",
+    //     as: "process",
+    //     let: { process_end_date: "$process_end_date" },
+    //     pipeline: [
+    //       {
+    //         $addFields: {
+    //           datelenght: { $subtract: ["$$process_end_date", Date.now] },
+    //         },
+    //       },
+    //     ],
+    //   },
+    // },
+  ])
+
+    // find()
+    //   .sort()
+    .then((projectprocess) =>
+      res.send({
+        status: 1,
+        data: projectprocess,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 module.exports = router;
