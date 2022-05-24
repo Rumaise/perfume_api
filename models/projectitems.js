@@ -9,41 +9,40 @@ const ProjectItemSchema = new mongoose.Schema({
     required: true,
   },
   item_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "items",
+    type: String,
     required: true,
   },
   available_quantity: {
     type: Number,
-    required: true,
+    default: 0,
   },
   allocated_quantity: {
     type: Number,
-    required: true,
+    default: 0,
   },
   total_quantity: {
     type: Number,
-    required: true,
+    default: 0,
   },
   required_quantity: {
     type: Number,
-    required: true,
+    default: 0,
   },
   balance_quantity: {
     type: Number,
-    required: true,
+    default: 0,
   },
   order_referrence: {
     type: String,
-    required: true,
+    default: undefined,
   },
   vendor_name: {
     type: String,
-    required: true,
+    default: undefined,
   },
   order_date: {
     type: Date,
-    default: Date.now,
+    default: undefined,
   },
   remarks: {
     type: String,
@@ -82,13 +81,6 @@ const validateProjectItem = (projectitem) => {
   const schema = yup.object().shape({
     project_id: yup.string().required(),
     item_id: yup.string().required(),
-    available_quantity: yup.number().required(),
-    allocated_quantity: yup.number().required(),
-    total_quantity: yup.number().required(),
-    required_quantity: yup.number().required(),
-    balance_quantity: yup.number().required(),
-    order_referrence: yup.string().required(),
-    vendor_name: yup.string().required(),
     created_by: yup.string().required(),
   });
 

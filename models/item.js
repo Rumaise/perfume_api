@@ -15,22 +15,6 @@ const ItemSchema = new mongoose.Schema({
   type: {
     type: String,
   },
-  available_quantity: {
-    type: Number,
-    default: 0,
-  },
-  allocated_quantity: {
-    type: Number,
-    default: 0,
-  },
-  item_required: {
-    type: Number,
-    default: 0,
-  },
-  total_quantity: {
-    type: Number,
-    default: 0,
-  },
   created_date: {
     type: Date,
     default: Date.now,
