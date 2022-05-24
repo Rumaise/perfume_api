@@ -15,6 +15,7 @@ const userGroupRoute = require("./routes/usergroup");
 const userRoute = require("./routes/user");
 const processRoute = require("./routes/process");
 const projectProcessRoute = require("./routes/projectprocess");
+const itemRoute = require("./routes/item");
 
 const PORT = process.env.PORT || 3000;
 
@@ -47,6 +48,7 @@ app.use("/usergroup", userGroupRoute);
 app.use("/user", userRoute);
 app.use("/process", processRoute);
 app.use("/projectprocess", projectProcessRoute);
+app.use("/item", itemRoute);
 
 //connect to mongodb
 mongoose

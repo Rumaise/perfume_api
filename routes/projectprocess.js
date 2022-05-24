@@ -151,7 +151,42 @@ router.get("/processlistingbyenddate", (req, res) => {
         projectdetails: 1,
         processdetails: 1,
         day: {
-          $divide: [{ $subtract: ["$process_end_date", new Date()] }, 86400000],
+          $trunc: {
+            $divide: [
+              { $subtract: ["$process_end_date", new Date()] },
+              86400000,
+            ],
+          },
+        },
+        testday: {
+          $dateSubtract: {
+            startDate: "$process_end_date",
+            unit: "month",
+            amount: 1,
+          },
+          // $divide: [
+          //   {
+          //     $subtract: [
+          //       {
+          //         process_start_date: {
+          //           $dateToString: {
+          //             format: "%Y-%m-%d",
+          //             date: "$process_started_date",
+          //           },
+          //         },
+          //       },
+          //       {
+          //         process_start_date: {
+          //           $dateToString: {
+          //             format: "%Y-%m-%d",
+          //             date: new Date(),
+          //           },
+          //         },
+          //       },
+          //     ],
+          //   },
+          //   86400000,
+          // ],
         },
         process_start_date: {
           $dateToString: { format: "%Y-%m-%d", date: "$process_started_date" },
