@@ -42,7 +42,6 @@ const ProjectItemSchema = new mongoose.Schema({
   },
   order_date: {
     type: Date,
-    default: undefined,
   },
   remarks: {
     type: String,
