@@ -174,6 +174,66 @@ router.put("/updateproject/:id", async (req, res) => {
   });
 });
 
+router.put("/updateprojectstartdate/:id", async (req, res) => {
+  const projectupdate = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      start_datetime: req.body.start_datetime,
+    },
+    { new: true }
+  );
+  if (!projectupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Project Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectupdate,
+  });
+});
+
+router.put("/updateprojecthandoverdate/:id", async (req, res) => {
+  const projectupdate = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      handover_datetime: req.body.handover_datetime,
+    },
+    { new: true }
+  );
+  if (!projectupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Project Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectupdate,
+  });
+});
+
+router.put("/updateprojectapproveddatetime/:id", async (req, res) => {
+  const projectupdate = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      approved_datetime: req.body.approved_datetime,
+    },
+    { new: true }
+  );
+  if (!projectupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Project Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectupdate,
+  });
+});
+
 //DELETE A PROJECT
 router.delete("/deleteproject/:id", async (req, res) => {
   const projectdelete = await Project.findByIdAndRemove(req.params.id);
