@@ -111,18 +111,18 @@ router.get("/loadallprojectwithcustomerdetails", (req, res) => {
         preserveNullAndEmptyArrays: true,
       },
     },
-    {
-      $project: {
-        _id: 1,
-        customer_id: 1,
-        referrence: 1,
-        brandname: 1,
-        productname: 1,
-        producttype: 1,
-        variantname: 1,
-        customerdetails: 1,
-      },
-    },
+    // {
+    //   // $project: {
+    //   //   _id: 1,
+    //   //   customer_id: 1,
+    //   //   referrence: 1,
+    //   //   brandname: 1,
+    //   //   productname: 1,
+    //   //   producttype: 1,
+    //   //   variantname: 1,
+    //   //   customerdetails: 1,
+    //   // },
+    // },
   ])
     .then((projects) =>
       res.send({

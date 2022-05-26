@@ -39,18 +39,15 @@ const ProjectSchema = new mongoose.Schema({
   },
   start_datetime: {
     type: Date,
-    default: Date.now,
   },
   handover_datetime: {
     type: Date,
-    default: Date.now,
   },
   approved_by: {
     type: String,
   },
   approved_datetime: {
     type: Date,
-    default: Date.now,
   },
   completed: {
     type: Boolean,
