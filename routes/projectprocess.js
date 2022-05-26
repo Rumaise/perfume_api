@@ -94,6 +94,26 @@ router.get("/listprojectprocess", (req, res) => {
     });
 });
 
+router.put("/updateprojectprocessenddate/:id", async (req, res) => {
+  const projectprocessupdate = await ProjectProcess.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      process_end_date: req.body.process_end_date,
+    },
+    { new: true }
+  );
+  if (!projectprocessupdate)
+    res.status(404).send({
+      status: 0,
+      data: " Project Process Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectprocessupdate,
+  });
+});
+
 router.get("/processlistingbyenddate", (req, res) => {
   ProjectProcess.aggregate([
     {
