@@ -53,6 +53,61 @@ router.get("/listprocess", (req, res) => {
     });
 });
 
+router.get("/listprocessbydetails", (req, res) => {
+  Process.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "approvers",
+        foreignField: "_id",
+        as: "approverslist",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              firstname: 1,
+              lastname: 1,
+              email: 1,
+              phone: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "notify",
+        foreignField: "_id",
+        as: "notifierslist",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              firstname: 1,
+              lastname: 1,
+              email: 1,
+              phone: 1,
+            },
+          },
+        ],
+      },
+    },
+  ])
+    .then((processes) =>
+      res.send({
+        status: 1,
+        data: processes,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/processdropdown/:projectid/:createdby", async (req, res) => {
   console.log(req.params.projectid);
   console.log(req.params.createdby);
