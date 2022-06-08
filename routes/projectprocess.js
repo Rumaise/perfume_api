@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const {
   ProjectProcess,
@@ -80,6 +81,22 @@ router.post("/addprojectprocess", async (req, res) => {
 
 router.get("/listprojectprocess", (req, res) => {
   ProjectProcess.find()
+    .then((projectprocess) =>
+      res.send({
+        status: 1,
+        data: projectprocess,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+router.get("/listprojectprocessbypaginate/:page", (req, res) => {
+  ProjectProcess.paginate({}, { page: req.params.page, limit: 2 })
     .then((projectprocess) =>
       res.send({
         status: 1,

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const yup = require("yup");
 
 //project process schema
@@ -61,6 +62,8 @@ const ProjectProcessSchema = new mongoose.Schema({
     type: String,
   },
 });
+
+ProjectProcessSchema.plugin(mongoosePaginate);
 
 const validateProjectProcess = (projectprocess) => {
   const schema = yup.object().shape({

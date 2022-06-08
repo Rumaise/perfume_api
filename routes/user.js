@@ -43,6 +43,24 @@ router.post("/createuser", async (req, res) => {
   }
 });
 
+//SEARCH USER BY PHONE
+router.get("/searchuser/:term?", (req, res) => {
+  console.log(req.params.term);
+  UserSchema.find({ firstname: { $regex: ".*" + req.params.term + ".*" } })
+    .then((user) =>
+      res.send({
+        status: 1,
+        data: user,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.post("/login", async (req, res) => {
   UserSchema.findOne({ username: req.body.username })
     .then((user) => {
