@@ -61,6 +61,31 @@ router.get("/searchuser/:term?", (req, res) => {
     });
 });
 
+//UPDATE USER DETAILS BASED ON ID
+router.put("/userupdate/:id", async (req, res) => {
+  const userupdate = await UserSchema.findByIdAndUpdate(
+    req.params.id,
+    {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      phone: req.body.phone,
+      designation: req.body.designation,
+      modified_by: req.body.modified_by,
+    },
+    { new: true }
+  );
+  if (!userupdate)
+    res.status(404).send({
+      status: 0,
+      data: "User Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: userupdate,
+  });
+});
+
 router.post("/login", async (req, res) => {
   UserSchema.findOne({ username: req.body.username })
     .then((user) => {
