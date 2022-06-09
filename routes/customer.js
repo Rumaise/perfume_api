@@ -91,6 +91,34 @@ router.get("/:id", async (req, res) => {
   });
 });
 
+//UPDATE CUSTOMER DETAILS BASED ON ID
+router.put("/customerupdate/:id", async (req, res) => {
+  const customerupdate = await Customer.findByIdAndUpdate(
+    req.params.id,
+    {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      phone: req.body.phone,
+      location: req.body.location,
+      companyname: req.body.companyname,
+      address: req.body.address,
+      trn: req.body.trn,
+      modified_by: req.body.modified_by,
+    },
+    { new: true }
+  );
+  if (!customerupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Customer Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: customerupdate,
+  });
+});
+
 //UPDATE SUB CATEGORY BASED ON ID
 router.put("/:id", async (req, res) => {
   const customerupdate = await Customer.findByIdAndUpdate(
