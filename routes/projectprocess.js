@@ -156,6 +156,25 @@ router.get("/processlistingbyenddate", (req, res) => {
               approved_datetime: 1,
             },
           },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "customer_id",
+              foreignField: "_id",
+              as: "customer_name",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    email: 1,
+                    phone: 1,
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
