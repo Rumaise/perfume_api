@@ -128,4 +128,37 @@ router.get("/userslist", (req, res) => {
     });
 });
 
+router.get("/userslistbydetails", (req, res) => {
+  UserSchema.aggregate([
+    {
+      $lookup: {
+        from: "usergroups",
+        localField: "user_group",
+        foreignField: "_id",
+        as: "user_group",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              group_name: 1,
+            },
+          },
+        ],
+      },
+    },
+  ])
+    .then((users) =>
+      res.send({
+        status: 1,
+        data: users,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 module.exports = router;

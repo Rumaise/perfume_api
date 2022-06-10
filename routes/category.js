@@ -156,6 +156,8 @@ router.get("/loadsubcategorymaster", (req, res) => {
     });
 });
 
+
+
 // GET ALL RECORDS JOINED
 router.get("/loadcategorybyid/:id", (req, res) => {
   Category.aggregate([
