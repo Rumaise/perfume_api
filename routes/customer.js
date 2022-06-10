@@ -63,6 +63,7 @@ router.get("/searchcustomer/:term?", (req, res) => {
 //GET ALL CUSTOMERS
 router.get("/customerslist", (req, res) => {
   Customer.find()
+    .sort({ firstname: 1 })
     .then((customer) =>
       res.send({
         status: 1,
