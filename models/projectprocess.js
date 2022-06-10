@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const yup = require("yup");
 
 //project process schema
@@ -63,7 +64,8 @@ const ProjectProcessSchema = new mongoose.Schema({
   },
 });
 
-ProjectProcessSchema.plugin(mongoosePaginate);
+// ProjectProcessSchema.plugin(mongoosePaginate);
+ProjectProcessSchema.plugin(aggregatePaginate);
 
 const validateProjectProcess = (projectprocess) => {
   const schema = yup.object().shape({
