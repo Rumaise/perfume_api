@@ -46,7 +46,17 @@ router.post("/createprojectitem", async (req, res) => {
 });
 
 router.get("/projectitemslist", (req, res) => {
-  ProjectItem.find()
+  ProjectItem.aggregate([
+    {
+      $lookup: {
+        from: "projects",
+        localField: "project_id",
+        foreignField: "_id",
+        as: "project_details",
+        pipeline: [],
+      },
+    },
+  ])
     .then((projectitems) =>
       res.send({
         status: 1,
