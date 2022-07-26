@@ -17,6 +17,7 @@ const processRoute = require("./routes/process");
 const projectProcessRoute = require("./routes/projectprocess");
 const itemRoute = require("./routes/item");
 const projectitemRoute = require("./routes/projectitem");
+const projectmainRoute = require("./routes/projectmain");
 
 const PORT = process.env.PORT || 3000;
 
@@ -51,6 +52,7 @@ app.use("/process", processRoute);
 app.use("/projectprocess", projectProcessRoute);
 app.use("/item", itemRoute);
 app.use("/projectitem", projectitemRoute);
+app.use("/projectmain", projectmainRoute);
 
 //connect to mongodb
 mongoose

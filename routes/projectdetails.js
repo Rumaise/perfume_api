@@ -3,6 +3,7 @@ const router = express.Router();
 const { ProjectMain, validateProjectMain } = require("../models/projectmain");
 const { ProjectDetails } = require("../models/projectdetails");
 const { Project, validateProject } = require("../models/project");
+const { default: mongoose } = require("mongoose");
 
 //POST : CREATE A NEW PROJECT DETAILS
 
@@ -69,5 +70,58 @@ router.post("/createprojectdetails", async (req, res) => {
       });
     });
 });
+
+router.get(
+  "/geteditprojectdetailsbyprojectid/:projectid/:customerid/:maincategoryid",
+  (req, res) => {
+    ProjectDetails.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              project_id: mongoose.Types.ObjectId(req.params.projectid),
+            },
+            {
+              customer_id: mongoose.Types.ObjectId(req.params.customerid),
+            },
+            {
+              main_category_id: mongoose.Types.ObjectId(
+                req.params.maincategoryid
+              ),
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "subcategories",
+          localField: "sub_category_id",
+          foreignField: "_id",
+          as: "subcategorydetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "subcategoryitems",
+          localField: "item_category_id",
+          foreignField: "_id",
+          as: "subcategoryitemdetails",
+        },
+      },
+    ])
+      .then((projectitemsdetails) =>
+        res.send({
+          status: 1,
+          data: projectitemsdetails,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
 
 module.exports = router;

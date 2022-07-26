@@ -2,6 +2,7 @@ const express = require("express");
 const projectmain = require("../models/projectmain");
 const router = express.Router();
 const { ProjectMain, validateProjectMain } = require("../models/projectmain");
+const { default: mongoose } = require("mongoose");
 
 //POST : CREATE A NEW PROJECT MAIN
 
@@ -72,6 +73,42 @@ router.get("/projectmain/:id", async (req, res) => {
     data: projectmaindetails,
   });
 });
+
+//GET THE PROJECT MAIN BY PROJECT ID , CUSTOMER ID AND MAIN CATEGORY ID
+router.get(
+  "/projectmaindetailsbyprojectid/:projectid/:customerid/:categoryid",
+  async (req, res) => {
+    ProjectMain.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              project_id: mongoose.Types.ObjectId(req.params.projectid),
+            },
+            {
+              customer_id: mongoose.Types.ObjectId(req.params.customerid),
+            },
+            {
+              main_category_id: mongoose.Types.ObjectId(req.params.categoryid),
+            },
+          ],
+        },
+      },
+    ])
+      .then((projectmaindetails) =>
+        res.send({
+          status: 1,
+          data: projectmaindetails,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
 
 //UPDATE PROJECT MAIN BASED ON ID
 router.put("/updateprojectmain/:id", async (req, res) => {
