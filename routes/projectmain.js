@@ -115,6 +115,11 @@ router.put("/updateprojectmain/:id", async (req, res) => {
   const projectmainupdate = await ProjectMain.findByIdAndUpdate(
     req.params.id,
     {
+      detailname: req.body.detailname,
+      itemcode: req.body.itemcode,
+      volume: req.body.volume,
+      photolink: req.body.image,
+      remarks: req.body.remarks,
       modified_by: req.body.modified_by,
     },
     { new: true }

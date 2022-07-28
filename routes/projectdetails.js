@@ -124,4 +124,137 @@ router.get(
   }
 );
 
+//UPDATE MULTIPLE PROJECT DETAILS BASED ON  PROJECT ID
+router.put(
+  "/updateprojectsdetailsbyprojectid/:projectid/:customerid/:maincategoryid",
+  async (req, res) => {
+    ProjectDetails.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              project_id: mongoose.Types.ObjectId(req.params.projectid),
+            },
+            {
+              customer_id: mongoose.Types.ObjectId(req.params.customerid),
+            },
+            {
+              main_category_id: mongoose.Types.ObjectId(
+                req.params.maincategoryid
+              ),
+            },
+          ],
+        },
+      },
+    ])
+      .then(async (projectitemsdetails) => {
+        var currentprojectdetails = projectitemsdetails;
+        var updatedlistprojectdetails = req.body.subcategoryitemdetails;
+        var alllist = req.body.subcategoryitemdetails;
+        console.log(currentprojectdetails);
+        console.log(updatedlistprojectdetails);
+        for (let i = 0; i < currentprojectdetails.length; i++) {
+          var checksubcategoryid = checkItemExist(
+            updatedlistprojectdetails,
+            currentprojectdetails[i]["sub_category_id"]
+          );
+          console.log("The status of sub category existing");
+          console.log(checksubcategoryid.length);
+          if (checksubcategoryid.length != 0) {
+            for (let k = 0; k < updatedlistprojectdetails.length; k++) {
+              console.log("inside update item");
+              console.log(updatedlistprojectdetails[k]);
+              if (
+                currentprojectdetails[i]["project_id"] ==
+                  updatedlistprojectdetails[k]["project_id"] &&
+                currentprojectdetails[i]["customer_id"] ==
+                  updatedlistprojectdetails[k]["customer_id"] &&
+                currentprojectdetails[i]["main_category_id"] ==
+                  updatedlistprojectdetails[k]["main_category_id"] &&
+                currentprojectdetails[i]["sub_category_id"] ==
+                  updatedlistprojectdetails[k]["sub_category_id"]
+              ) {
+                console.log("This is the equal one");
+                console.log(currentprojectdetails[i]);
+                const projectdetailsupdate =
+                  await ProjectDetails.findByIdAndUpdate(
+                    currentprojectdetails[i]["_id"],
+                    {
+                      item_category_id:
+                        updatedlistprojectdetails[k]["item_category_id"],
+                      modified_by: req.body.modified_by,
+                    },
+                    { new: true }
+                  );
+                if (!projectdetailsupdate) {
+                  res.status(404).send({
+                    status: 0,
+                    data: "Project Details Not Found",
+                  });
+                } else {
+                  alllist.splice(
+                    updatedlistprojectdetails.indexOf(
+                      updatedlistprojectdetails[k]
+                    )
+                  );
+                }
+              }
+            }
+          } else {
+            const projectdetailsdelete = await ProjectDetails.findByIdAndRemove(
+              currentprojectdetails[i]["_id"]
+            );
+            if (!projectdetailsdelete)
+              res.status(404).send({
+                status: 0,
+                data: "Project detail deletion failed",
+              });
+          }
+        }
+        if (alllist.length != 0) {
+          const projectdetailsinsertnewfiles = await ProjectDetails.insertMany(
+            alllist
+          );
+          if (!projectdetailsinsertnewfiles)
+            res.status(404).send({
+              status: 0,
+              data: "Project detail insertion failed",
+            });
+        }
+        console.log("The all lsit");
+        console.log(alllist);
+        res.send({
+          status: 1,
+          data: "Successfully updated",
+        });
+      })
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
+
+function checkItemExist(listdata, subcategorydata) {
+  console.log("inside check");
+  console.log(listdata);
+  console.log(subcategorydata);
+  var result = [];
+  for (let j = 0; j < listdata.length; j++) {
+    if (
+      mongoose.Types.ObjectId(listdata[j]["sub_category_id"]).equals(
+        subcategorydata
+      )
+    ) {
+      console.log("The sub category ids are same");
+      console.log(listdata[j]["sub_category_id"]);
+      result.push(j);
+    }
+  }
+  console.log(result);
+  return result;
+}
+
 module.exports = router;
