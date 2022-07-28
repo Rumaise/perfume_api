@@ -160,6 +160,8 @@ router.put(
           );
           console.log("The status of sub category existing");
           console.log(checksubcategoryid.length);
+          console.log("All list is");
+          console.log(alllist);
           if (checksubcategoryid.length != 0) {
             for (let k = 0; k < updatedlistprojectdetails.length; k++) {
               console.log("inside update item");
@@ -192,11 +194,16 @@ router.put(
                     data: "Project Details Not Found",
                   });
                 } else {
+                  console.log("rumaise");
+                  console.log(alllist);
                   alllist.splice(
                     updatedlistprojectdetails.indexOf(
                       updatedlistprojectdetails[k]
-                    )
+                    ),
+                    1
                   );
+                  console.log("The updated rumaise ");
+                  console.log(alllist);
                 }
               }
             }
