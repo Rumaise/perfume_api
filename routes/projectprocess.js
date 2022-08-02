@@ -95,6 +95,24 @@ router.get("/listprojectprocess", (req, res) => {
     });
 });
 
+//GET ALL PROJECT PROCESSES
+
+router.get("/projectprocesscount", (req, res) => {
+  ProjectProcess.estimatedDocumentCount()
+    .then((projectprocesscount) =>
+      res.send({
+        status: 1,
+        data: projectprocesscount,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/listprojectprocessbypaginate/:page/:count", (req, res) => {
   ProjectProcess.aggregatePaginate(
     ProjectProcess.aggregate([
