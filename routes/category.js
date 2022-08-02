@@ -156,8 +156,6 @@ router.get("/loadsubcategorymaster", (req, res) => {
     });
 });
 
-
-
 // GET ALL RECORDS JOINED
 router.get("/loadcategorybyid/:id", (req, res) => {
   Category.aggregate([
@@ -211,7 +209,7 @@ router.get("/loadcategorybyid/:id", (req, res) => {
           {
             $addFields: {
               expand: false,
-              currentselected: 0,
+              currentselected: -1,
             },
           },
         ],
