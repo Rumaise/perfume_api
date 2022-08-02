@@ -138,4 +138,32 @@ router.get("/processdropdown/:projectid/:createdby", async (req, res) => {
     });
 });
 
+//UPDATE PROJECT BASED ON ID
+router.put("/updateprocess/:id", async (req, res) => {
+  const processupdate = await Process.findByIdAndUpdate(
+    req.params.id,
+    {
+      process_name: req.body.process_name,
+      mailstat: req.body.mailstat,
+      $set: {
+        approvers: req.body.approvers,
+      },
+      $set: {
+        notify: req.body.notify,
+      },
+      modified_by: req.body.modified_by,
+    },
+    { new: true }
+  );
+  if (!processupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Process details update failed",
+    });
+  res.send({
+    status: 1,
+    data: processupdate,
+  });
+});
+
 module.exports = router;
