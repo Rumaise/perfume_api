@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 //project schema
 const ProjectSchema = new mongoose.Schema({
@@ -83,6 +84,8 @@ const ProjectSchema = new mongoose.Schema({
     type: String,
   },
 });
+
+ProjectSchema.plugin(aggregatePaginate);
 
 const validateProject = (project) => {
   const schema = yup.object().shape({

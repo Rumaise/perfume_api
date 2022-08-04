@@ -78,6 +78,71 @@ router.get("/projectslistcount", (req, res) => {
     });
 });
 
+router.get("/totalprojectscount", (req, res) => {
+  Project.estimatedDocumentCount()
+    .then((count) =>
+      res.send({
+        status: 1,
+        data: count,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+router.get("/projectslistbypaginate/:page/:count", (req, res) => {
+  Project.aggregatePaginate(
+    Project.aggregate([
+      {
+        $lookup: {
+          from: "customers",
+          as: "customerdetails",
+          let: { customer_id: "$customer_id" },
+          pipeline: [
+            {
+              $match: { $expr: { $eq: ["$_id", "$$customer_id"] } },
+            },
+            {
+              $project: {
+                _id: 1,
+                firstname: 1,
+                lastname: 1,
+                phone: 1,
+                email: 1,
+                companyname: 1,
+                trn: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$customerdetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ]),
+    { page: req.params.page, limit: req.params.count }
+  )
+    .then((projects) =>
+      res.send({
+        status: 1,
+        data: projects,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET THE PROJECT DETAILS ALONG WITH CUSTOMER DETAILS
 // GET ALL RECORDS JOINED
 router.get("/loadallprojectwithcustomerdetails", (req, res) => {

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const yup = require("yup");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 //customer schema
 const CustomerSchema = new mongoose.Schema({
@@ -73,6 +74,8 @@ const CustomerSchema = new mongoose.Schema({
     type: String,
   },
 });
+
+CustomerSchema.plugin(aggregatePaginate);
 
 const validateCustomer = (customer) => {
   const schema = yup.object().shape({

@@ -78,6 +78,41 @@ router.get("/customerslist", (req, res) => {
     });
 });
 
+router.get("/customerscount", (req, res) => {
+  Customer.estimatedDocumentCount()
+    .then((customerscount) =>
+      res.send({
+        status: 1,
+        data: customerscount,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+router.get("/customerslistbypaginate/:page/:count", (req, res) => {
+  Customer.aggregatePaginate(
+    Customer.aggregate([{ $sort: { firstname: 1 } }]),
+    { page: req.params.page, limit: req.params.count }
+  )
+    .then((customers) =>
+      res.send({
+        status: 1,
+        data: customers,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET THE CUSTOMER BY ID
 router.get("/:id", async (req, res) => {
   const subcategorydetails = await Customer.findById(req.params.id);
