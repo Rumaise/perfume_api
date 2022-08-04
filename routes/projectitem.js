@@ -71,6 +71,53 @@ router.get("/projectitemslist", (req, res) => {
     });
 });
 
+//GET ALL PROJECT ITEMS COUNT
+
+router.get("/projectitemscount", (req, res) => {
+  ProjectItem.estimatedDocumentCount()
+    .then((projectitemcount) =>
+      res.send({
+        status: 1,
+        data: projectitemcount,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+router.get("/projectitemslistbypaginate/:page/:count", (req, res) => {
+  ProjectItem.aggregatePaginate(
+    ProjectItem.aggregate([
+      {
+        $lookup: {
+          from: "projects",
+          localField: "project_id",
+          foreignField: "_id",
+          as: "project_details",
+          pipeline: [],
+        },
+      },
+    ]),
+    { page: req.params.page, limit: req.params.count }
+  )
+    .then((projectitem) =>
+      res.send({
+        status: 1,
+        data: projectitem,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/projectitemsbyid/:id", (req, res) => {
   ProjectItem.aggregate([
     {
