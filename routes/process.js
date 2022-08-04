@@ -140,6 +140,7 @@ router.get("/processdropdown/:projectid/:createdby", async (req, res) => {
 
 //UPDATE PROJECT BASED ON ID
 router.put("/updateprocess/:id", async (req, res) => {
+  console.log(req.body.approvers);
   const processupdate = await Process.findByIdAndUpdate(
     req.params.id,
     {
@@ -147,8 +148,6 @@ router.put("/updateprocess/:id", async (req, res) => {
       mailstat: req.body.mailstat,
       $set: {
         approvers: req.body.approvers,
-      },
-      $set: {
         notify: req.body.notify,
       },
       modified_by: req.body.modified_by,
