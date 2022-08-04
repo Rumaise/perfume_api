@@ -60,6 +60,33 @@ router.get("/searchcustomer/:term?", (req, res) => {
     });
 });
 
+//SEARCH CUSTOMER BY NAME
+router.get("/searchcustomerbyfield/:count/:term?", (req, res) => {
+  console.log(req.params.count);
+  Customer.find({
+    $or: [
+      { firstname: { $regex: ".*" + req.params.term + ".*" } },
+      { lastname: { $regex: ".*" + req.params.term + ".*" } },
+      { email: { $regex: ".*" + req.params.term + ".*" } },
+      { location: { $regex: ".*" + req.params.term + ".*" } },
+      { phone: { $regex: ".*" + req.params.term + ".*" } },
+    ],
+  })
+    .limit(req.params.count)
+    .then((customer) =>
+      res.send({
+        status: 1,
+        data: customer,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET ALL CUSTOMERS
 router.get("/customerslist", (req, res) => {
   Customer.find()
