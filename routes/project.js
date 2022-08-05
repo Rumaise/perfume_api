@@ -155,8 +155,18 @@ router.get("/projectslistbypaginate/:page/:count/:term?", (req, res) => {
                   $options: "i",
                 },
               },
-              { referrence: { $regex: ".*" + req.params.term + ".*" } },
-              { brandname: { $regex: ".*" + req.params.term + ".*" } },
+              {
+                referrence: {
+                  $regex: ".*" + req.params.term + ".*",
+                  $options: "i",
+                },
+              },
+              {
+                brandname: {
+                  $regex: ".*" + req.params.term + ".*",
+                  $options: "i",
+                },
+              },
             ],
           },
         },

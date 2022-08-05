@@ -89,33 +89,86 @@ router.get("/projectitemscount", (req, res) => {
     });
 });
 
-router.get("/projectitemslistbypaginate/:page/:count", (req, res) => {
-  ProjectItem.aggregatePaginate(
-    ProjectItem.aggregate([
-      {
-        $lookup: {
-          from: "projects",
-          localField: "project_id",
-          foreignField: "_id",
-          as: "project_details",
-          pipeline: [],
+router.get("/projectitemslistbypaginate/:page/:count/:term?", (req, res) => {
+  if (req.params.term) {
+    ProjectItem.aggregatePaginate(
+      ProjectItem.aggregate([
+        {
+          $lookup: {
+            from: "projects",
+            localField: "project_id",
+            foreignField: "_id",
+            as: "project_details",
+            pipeline: [],
+          },
         },
-      },
-    ]),
-    { page: req.params.page, limit: req.params.count }
-  )
-    .then((projectitem) =>
-      res.send({
-        status: 1,
-        data: projectitem,
-      })
+        {
+          $match: {
+            $or: [
+              {
+                item_id: {
+                  $regex: ".*" + req.params.term + ".*",
+                  $options: "i",
+                },
+              },
+              {
+                order_referrence: {
+                  $regex: ".*" + req.params.term + ".*",
+                  $options: "i",
+                },
+              },
+              {
+                "project_details.referrence": {
+                  $regex: ".*" + req.params.term + ".*",
+                  $options: "i",
+                },
+              },
+            ],
+          },
+        },
+      ]),
+      { page: req.params.page, limit: req.params.count }
     )
-    .catch((error) => {
-      res.status(500).send({
-        status: 0,
-        data: error.message,
+      .then((projectitem) =>
+        res.send({
+          status: 1,
+          data: projectitem,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
       });
-    });
+  } else {
+    ProjectItem.aggregatePaginate(
+      ProjectItem.aggregate([
+        {
+          $lookup: {
+            from: "projects",
+            localField: "project_id",
+            foreignField: "_id",
+            as: "project_details",
+            pipeline: [],
+          },
+        },
+      ]),
+      { page: req.params.page, limit: req.params.count }
+    )
+      .then((projectitem) =>
+        res.send({
+          status: 1,
+          data: projectitem,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
 });
 
 router.get("/projectitemsbyid/:id", (req, res) => {
