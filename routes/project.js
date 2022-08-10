@@ -78,6 +78,74 @@ router.get("/projectslistcount", (req, res) => {
     });
 });
 
+//api to get the collection count
+router.get(
+  "/projectslistcountbyfromandtodate/:from/:to/:status",
+  (req, res) => {
+    console.log(req.params.from);
+    console.log(req.params.to);
+    Project.aggregate([
+      {
+        $match: {
+          completed: req.params.status === "true" ? true : false,
+          handover_datetime: { $exists: true },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          formattedDate: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$handover_datetime",
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          convert: {
+            $dateFromString: {
+              dateString: "$formattedDate",
+              format: "%Y-%m-%d",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          formattedDate: 1,
+          convert: 1,
+        },
+      },
+      {
+        $match: {
+          convert: {
+            $gte: new Date(req.params.from),
+            $lte: new Date(req.params.to),
+          },
+        },
+      },
+      {
+        $count: "totalcount",
+      },
+    ])
+      .then((project) =>
+        res.send({
+          status: 1,
+          data: project,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
+
 router.get("/totalprojectscount", (req, res) => {
   Project.estimatedDocumentCount()
     .then((count) =>
