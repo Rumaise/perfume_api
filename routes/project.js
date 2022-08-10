@@ -94,147 +94,158 @@ router.get("/totalprojectscount", (req, res) => {
     });
 });
 
-router.get("/projectslistbypaginate/:page/:count/:term?", (req, res) => {
-  if (req.params.term) {
-    console.log("Terms are not null");
-    Project.aggregatePaginate(
-      Project.aggregate([
-        {
-          $lookup: {
-            from: "customers",
-            as: "customerdetails",
-            let: { customer_id: "$customer_id" },
-            pipeline: [
-              {
-                $match: { $expr: { $eq: ["$_id", "$$customer_id"] } },
-              },
-              {
-                $project: {
-                  _id: 1,
-                  firstname: 1,
-                  lastname: 1,
-                  phone: 1,
-                  email: 1,
-                  companyname: 1,
-                  trn: 1,
-                },
-              },
-            ],
+router.get(
+  "/projectslistbypaginate/:status/:page/:count/:term?",
+  (req, res) => {
+    if (req.params.term) {
+      console.log("Terms are not null");
+      Project.aggregatePaginate(
+        Project.aggregate([
+          {
+            $match: { completed: req.params.status === "true" ? true : false },
           },
-        },
-        {
-          $unwind: {
-            path: "$customerdetails",
-            preserveNullAndEmptyArrays: true,
+          {
+            $lookup: {
+              from: "customers",
+              as: "customerdetails",
+              let: { customer_id: "$customer_id" },
+              pipeline: [
+                {
+                  $match: { $expr: { $eq: ["$_id", "$$customer_id"] } },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    phone: 1,
+                    email: 1,
+                    companyname: 1,
+                    trn: 1,
+                  },
+                },
+              ],
+            },
           },
-        },
-        {
-          $match: {
-            $or: [
-              {
-                "customerdetails.firstname": {
-                  $regex: ".*" + req.params.term + ".*",
-                  $options: "i",
-                },
-              },
-              {
-                "customerdetails.lastname": {
-                  $regex: ".*" + req.params.term + ".*",
-                  $options: "i",
-                },
-              },
-              {
-                "customerdetails.email": {
-                  $regex: ".*" + req.params.term + ".*",
-                  $options: "i",
-                },
-              },
-              {
-                "customerdetails.phone": {
-                  $regex: ".*" + req.params.term + ".*",
-                  $options: "i",
-                },
-              },
-              {
-                referrence: {
-                  $regex: ".*" + req.params.term + ".*",
-                  $options: "i",
-                },
-              },
-              {
-                brandname: {
-                  $regex: ".*" + req.params.term + ".*",
-                  $options: "i",
-                },
-              },
-            ],
+          {
+            $unwind: {
+              path: "$customerdetails",
+              preserveNullAndEmptyArrays: true,
+            },
           },
-        },
-      ]),
-      { page: req.params.page, limit: req.params.count }
-    )
-      .then((projects) =>
-        res.send({
-          status: 1,
-          data: projects,
-        })
+          {
+            $match: {
+              $or: [
+                {
+                  "customerdetails.firstname": {
+                    $regex: ".*" + req.params.term + ".*",
+                    $options: "i",
+                  },
+                },
+                {
+                  "customerdetails.lastname": {
+                    $regex: ".*" + req.params.term + ".*",
+                    $options: "i",
+                  },
+                },
+                {
+                  "customerdetails.email": {
+                    $regex: ".*" + req.params.term + ".*",
+                    $options: "i",
+                  },
+                },
+                {
+                  "customerdetails.phone": {
+                    $regex: ".*" + req.params.term + ".*",
+                    $options: "i",
+                  },
+                },
+                {
+                  referrence: {
+                    $regex: ".*" + req.params.term + ".*",
+                    $options: "i",
+                  },
+                },
+                {
+                  brandname: {
+                    $regex: ".*" + req.params.term + ".*",
+                    $options: "i",
+                  },
+                },
+              ],
+            },
+          },
+        ]),
+        { page: req.params.page, limit: req.params.count }
       )
-      .catch((error) => {
-        res.status(500).send({
-          status: 0,
-          data: error.message,
+        .then((projects) =>
+          res.send({
+            status: 1,
+            data: projects,
+          })
+        )
+        .catch((error) => {
+          res.status(500).send({
+            status: 0,
+            data: error.message,
+          });
         });
-      });
-  } else {
-    console.log("Null terms");
-    Project.aggregatePaginate(
-      Project.aggregate([
-        {
-          $lookup: {
-            from: "customers",
-            as: "customerdetails",
-            let: { customer_id: "$customer_id" },
-            pipeline: [
-              {
-                $match: { $expr: { $eq: ["$_id", "$$customer_id"] } },
-              },
-              {
-                $project: {
-                  _id: 1,
-                  firstname: 1,
-                  lastname: 1,
-                  phone: 1,
-                  email: 1,
-                  companyname: 1,
-                  trn: 1,
+    } else {
+      console.log("Null terms");
+      console.log(req.params.status);
+
+      Project.aggregatePaginate(
+        Project.aggregate([
+          {
+            $match: { completed: req.params.status === "true" ? true : false },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              as: "customerdetails",
+              let: { customer_id: "$customer_id" },
+              pipeline: [
+                {
+                  $match: { $expr: { $eq: ["$_id", "$$customer_id"] } },
                 },
-              },
-            ],
+                {
+                  $project: {
+                    _id: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    phone: 1,
+                    email: 1,
+                    companyname: 1,
+                    trn: 1,
+                  },
+                },
+              ],
+            },
           },
-        },
-        {
-          $unwind: {
-            path: "$customerdetails",
-            preserveNullAndEmptyArrays: true,
+          {
+            $unwind: {
+              path: "$customerdetails",
+              preserveNullAndEmptyArrays: true,
+            },
           },
-        },
-      ]),
-      { page: req.params.page, limit: req.params.count }
-    )
-      .then((projects) =>
-        res.send({
-          status: 1,
-          data: projects,
-        })
+        ]),
+        { page: req.params.page, limit: req.params.count }
       )
-      .catch((error) => {
-        res.status(500).send({
-          status: 0,
-          data: error.message,
+        .then((projects) =>
+          res.send({
+            status: 1,
+            data: projects,
+          })
+        )
+        .catch((error) => {
+          res.status(500).send({
+            status: 0,
+            data: error.message,
+          });
         });
-      });
+    }
   }
-});
+);
 
 //GET THE PROJECT DETAILS ALONG WITH CUSTOMER DETAILS
 // GET ALL RECORDS JOINED
