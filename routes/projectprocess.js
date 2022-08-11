@@ -46,20 +46,22 @@ router.post("/addprojectprocess", async (req, res) => {
   const projectprocess = req.body.projectprocess;
   var projectprocesslist = [];
   await projectprocess.forEach(async (element) => {
-    var data = {
-      project_id: element.project_id,
-      process_id: element.process_id,
-      selected: element.selected,
-      created_by: element.created_by,
-    };
-    const error = await validateProjectProcess(data);
-    if (error.message) {
-      res.status(400).send({
-        status: 0,
-        data: error.message,
-      });
-    } else {
-      projectprocesslist.push(data);
+    if (element.selected) {
+      var data = {
+        project_id: element.project_id,
+        process_id: element.process_id,
+        selected: element.selected,
+        created_by: element.created_by,
+      };
+      const error = await validateProjectProcess(data);
+      if (error.message) {
+        res.status(400).send({
+          status: 0,
+          data: error.message,
+        });
+      } else {
+        projectprocesslist.push(data);
+      }
     }
   });
   await ProjectProcess.insertMany(projectprocesslist)
