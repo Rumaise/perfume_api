@@ -253,6 +253,70 @@ router.put("/updateprojectprocessenddate/:id", async (req, res) => {
   });
 });
 
+//api to get the collection count
+router.get("/projectprocesslistcountbyfromandtodate/:from/:to", (req, res) => {
+  console.log(req.params.from);
+  console.log(req.params.to);
+  ProjectProcess.aggregate([
+    {
+      $match: {
+        process_end_date: { $exists: true },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        formattedDate: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$process_end_date",
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        convert: {
+          $dateFromString: {
+            dateString: "$formattedDate",
+            format: "%Y-%m-%d",
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        formattedDate: 1,
+        convert: 1,
+      },
+    },
+    {
+      $match: {
+        convert: {
+          $gte: new Date(req.params.from),
+          $lte: new Date(req.params.to),
+        },
+      },
+    },
+    {
+      $count: "totalprocesslistcount",
+    },
+  ])
+    .then((projectprocess) =>
+      res.send({
+        status: 1,
+        data: projectprocess,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/processlistingbyenddate", (req, res) => {
   ProjectProcess.aggregate([
     {

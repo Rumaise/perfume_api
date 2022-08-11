@@ -89,6 +89,137 @@ router.get("/projectitemscount", (req, res) => {
     });
 });
 
+//api to get the collection count
+router.get("/projectitemslistcountbyfromandtodate/:from/:to", (req, res) => {
+  console.log(req.params.from);
+  console.log(req.params.to);
+  ProjectItem.aggregate([
+    {
+      $match: {
+        expected_delivery_date: { $exists: true },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        formattedDate: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$expected_delivery_date",
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        convert: {
+          $dateFromString: {
+            dateString: "$formattedDate",
+            format: "%Y-%m-%d",
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        formattedDate: 1,
+        convert: 1,
+      },
+    },
+    {
+      $match: {
+        convert: {
+          $gte: new Date(req.params.from),
+          $lte: new Date(req.params.to),
+        },
+      },
+    },
+    {
+      $count: "totalgoodslistcount",
+    },
+  ])
+    .then((projectitems) =>
+      res.send({
+        status: 1,
+        data: projectitems,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+//api to get the collection count for received date
+router.get(
+  "/projectitemslistcountbyfromandtodatebyreceiveddate/:from/:to",
+  (req, res) => {
+    console.log(req.params.from);
+    console.log(req.params.to);
+    ProjectItem.aggregate([
+      {
+        $match: {
+          received_date: { $exists: true },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          formattedDate: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$received_date",
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          convert: {
+            $dateFromString: {
+              dateString: "$formattedDate",
+              format: "%Y-%m-%d",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          formattedDate: 1,
+          convert: 1,
+        },
+      },
+      {
+        $match: {
+          convert: {
+            $gte: new Date(req.params.from),
+            $lte: new Date(req.params.to),
+          },
+        },
+      },
+      {
+        $count: "totalreceivedgoodslistcount",
+      },
+    ])
+      .then((projectitems) =>
+        res.send({
+          status: 1,
+          data: projectitems,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
+
 router.get("/projectitemslistbypaginate/:page/:count/:term?", (req, res) => {
   if (req.params.term) {
     ProjectItem.aggregatePaginate(
