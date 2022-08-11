@@ -162,6 +162,66 @@ router.get("/totalprojectscount", (req, res) => {
     });
 });
 
+router.get("/projectslistcountbyyearormonthwise/:year/:status", (req, res) => {
+  Project.aggregate([
+    {
+      $match: {
+        completed: req.params.status === "true" ? true : false,
+        start_datetime: { $exists: true },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        formattedDate: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$start_datetime",
+          },
+        },
+        formattedYear: {
+          $dateToString: {
+            format: "%Y",
+            date: "$start_datetime",
+          },
+        },
+      },
+    },
+    {
+      $match: {
+        formattedYear: req.params.year,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $month: { $dateFromString: { dateString: "$formattedDate" } },
+        },
+        total: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        formattedYear: 1,
+        total: 1,
+      },
+    },
+  ])
+    .then((project) =>
+      res.send({
+        status: 1,
+        data: project,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get(
   "/projectslistbypaginate/:status/:page/:count/:term?",
   (req, res) => {
