@@ -45,6 +45,38 @@ router.post("/createprojectitem", async (req, res) => {
     });
 });
 
+router.put("/updateprojectitem/:id", async (req, res) => {
+  const projectitemupdate = await ProjectItem.findByIdAndUpdate(
+    req.params.id,
+    {
+      project_id: req.body.project_id,
+      item_id: req.body.item_id,
+      available_quantity: req.body.available_quantity,
+      allocated_quantity: req.body.allocated_quantity,
+      total_quantity: req.body.total_quantity,
+      required_quantity: req.body.required_quantity,
+      balance_quantity: req.body.balance_quantity,
+      order_referrence: req.body.order_referrence,
+      vendor_name: req.body.vendor_name,
+      order_date: req.body.order_date,
+      remarks: req.body.remarks,
+      expected_delivery_date: req.body.expected_delivery_date,
+      received_date: req.body.received_date,
+      created_by: req.body.created_by,
+    },
+    { new: true }
+  );
+  if (!projectitemupdate)
+    res.status(404).send({
+      status: 0,
+      data: " Project Item Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectitemupdate,
+  });
+});
+
 router.get("/projectitemslist", (req, res) => {
   ProjectItem.aggregate([
     {
