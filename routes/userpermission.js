@@ -41,6 +41,7 @@ router.get("/permissionchecklist", async (req, res) => {
       var resultarray = [];
       await permissions.forEach((element) => {
         const data = {
+          _id: element._id,
           screen: element.screen,
           selected: false,
           created_by: element.created_by,
