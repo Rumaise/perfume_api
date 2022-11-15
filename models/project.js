@@ -15,7 +15,7 @@ const ProjectSchema = new mongoose.Schema({
   },
   referrence: {
     type: String,
-    required: true,
+    // required: true,
   },
   brandname: {
     type: String,
