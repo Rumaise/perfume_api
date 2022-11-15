@@ -34,7 +34,7 @@ const ProjectSchema = new mongoose.Schema({
   },
   variantname: {
     type: String,
-    required: true,
+    // required: true,
     minlength: 0,
     maxlength: 50,
   },
