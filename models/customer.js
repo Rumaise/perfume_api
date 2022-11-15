@@ -32,22 +32,22 @@ const CustomerSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   companyname: {
     type: String,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   address: {
     type: String,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   trn: {
     type: String,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   type: {
