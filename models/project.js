@@ -91,9 +91,9 @@ const validateProject = (project) => {
   const schema = yup.object().shape({
     customer_id: yup.string().required().min(3).max(50),
     referrence: yup.string().required(),
-    brandname: yup.string().required().min(3).max(50),
+    brandname: yup.string().min(0).max(50),
     productname: yup.string().required().min(3).max(50),
-    variantname: yup.string().required().min(3).max(50),
+    variantname: yup.string().min(0).max(50),
     quantity: yup.number().required(),
     created_by: yup.string().required(),
   });
