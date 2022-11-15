@@ -37,7 +37,7 @@ router.post("/createcustomer", async (req, res) => {
     .catch((error) => {
       res.status(500).send({
         status: 0,
-        data: error.msg,
+        data: error,
       });
     });
 });
