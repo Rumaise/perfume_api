@@ -90,7 +90,7 @@ ProjectSchema.plugin(aggregatePaginate);
 const validateProject = (project) => {
   const schema = yup.object().shape({
     customer_id: yup.string().required().min(3).max(50),
-    referrence: yup.string().required(),
+    referrence: yup.string(),
     brandname: yup.string().min(0).max(50),
     productname: yup.string().required().min(3).max(50),
     variantname: yup.string().min(0).max(50),
