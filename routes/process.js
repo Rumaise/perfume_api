@@ -120,7 +120,7 @@ router.get("/processdropdown/:projectid/:createdby", async (req, res) => {
           created_by: req.params.createdby,
           process_id: element._id,
           process_name: element.process_name,
-          selected: false,
+          selected: true,
         };
         console.log(data);
         resultarray.push(data);
