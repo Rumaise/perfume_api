@@ -359,6 +359,9 @@ router.get(
               preserveNullAndEmptyArrays: true,
             },
           },
+          {
+            $sort: { created_date: -1 },
+          },
         ]),
         { page: req.params.page, limit: req.params.count }
       )
