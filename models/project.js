@@ -19,7 +19,7 @@ const ProjectSchema = new mongoose.Schema({
   },
   brandname: {
     type: String,
-    required: true,
+    // required: true,
     minlength: 0,
     maxlength: 50,
   },
