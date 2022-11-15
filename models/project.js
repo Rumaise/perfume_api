@@ -20,7 +20,7 @@ const ProjectSchema = new mongoose.Schema({
   brandname: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   productname: {
@@ -35,7 +35,7 @@ const ProjectSchema = new mongoose.Schema({
   variantname: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   start_datetime: {
