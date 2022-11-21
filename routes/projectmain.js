@@ -170,10 +170,20 @@ router.get("/projectmaindetailsbyprojectid/:projectid", async (req, res) => {
         ],
       },
     },
-    { $group: { _id: "$main_category_id", details_data: { $push: "$$ROOT" } } },
+    {
+      $group: {
+        _id: "$main_category_id",
+        categorydetails: { $first: "$category_name" },
+        details_data: { $push: "$$ROOT" },
+      },
+    },
     {
       $project: {
         _id: 1,
+        categorydetails: {
+          _id: 1,
+          category_name: 1,
+        },
         details_data: {
           _id: 1,
           project_id: 1,
