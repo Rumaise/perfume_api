@@ -224,6 +224,38 @@ router.get("/projectmaindetailsbyprojectid/:projectid", async (req, res) => {
     });
 });
 
+//GET THE PROJECT MAIN BY PROJECT ID
+router.get("/projectmainitemcodebyprojectid/:projectid", async (req, res) => {
+  ProjectMain.aggregate([
+    {
+      $match: {
+        $and: [
+          {
+            project_id: mongoose.Types.ObjectId(req.params.projectid),
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        itemcode: 1,
+      },
+    },
+  ])
+    .then((projectmaindetails) =>
+      res.send({
+        status: 1,
+        data: projectmaindetails,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //UPDATE PROJECT MAIN BASED ON ID
 router.put("/updateprojectmain/:id", async (req, res) => {
   const projectmainupdate = await ProjectMain.findByIdAndUpdate(
