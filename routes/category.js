@@ -197,7 +197,6 @@ router.get("/loadcategorybyid/:id", (req, res) => {
               ],
             },
           },
-
           {
             $project: {
               _id: 1,

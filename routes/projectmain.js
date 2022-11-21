@@ -110,6 +110,110 @@ router.get(
   }
 );
 
+//GET THE PROJECT MAIN BY PROJECT ID
+router.get("/projectmaindetailsbyprojectid/:projectid", async (req, res) => {
+  ProjectMain.aggregate([
+    {
+      $match: {
+        $and: [
+          {
+            project_id: mongoose.Types.ObjectId(req.params.projectid),
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "main_category_id",
+        foreignField: "_id",
+        as: "category_name",
+      },
+    },
+
+    {
+      $unwind: "$details",
+    },
+    {
+      $lookup: {
+        from: "subcategories",
+        as: "subcategory_details",
+        let: {
+          subcategoryid: "$details.sub_category_id",
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_id", "$$subcategoryid"],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "subcategoryitems",
+        as: "subcategoryitems_details",
+        let: {
+          subcategoryitemsid: "$details.item_category_id",
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_id", "$$subcategoryitemsid"],
+              },
+            },
+          },
+        ],
+      },
+    },
+    { $group: { _id: "$main_category_id", details_data: { $push: "$$ROOT" } } },
+    {
+      $project: {
+        _id: 1,
+        details_data: {
+          _id: 1,
+          project_id: 1,
+          customer_id: 1,
+          main_category_id: 1,
+          category_name: {
+            _id: 1,
+            category_name: 1,
+          },
+          details: {
+            sub_category_id: 1,
+            item_category_id: 1,
+          },
+          subcategory_details: {
+            _id: 1,
+            sub_category_name: 1,
+          },
+          subcategoryitems_details: {
+            _id: 1,
+            sub_category_id: 1,
+            item_name: 1,
+          },
+        },
+      },
+    },
+  ])
+    .then((projectmaindetails) =>
+      res.send({
+        status: 1,
+        data: projectmaindetails,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //UPDATE PROJECT MAIN BASED ON ID
 router.put("/updateprojectmain/:id", async (req, res) => {
   const projectmainupdate = await ProjectMain.findByIdAndUpdate(
