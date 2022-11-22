@@ -194,6 +194,7 @@ router.get("/listprojectprocessbyprojectid/:id", (req, res) => {
         process_id: 1,
         projectdetails: 1,
         processdetails: 1,
+        completed: 1,
         day: {
           $trunc: {
             $divide: [
@@ -362,6 +363,26 @@ router.put("/updateprojectprocessenddate/:id", async (req, res) => {
     {
       modified_by: req.body.modified_by,
       process_end_date: req.body.process_end_date,
+    },
+    { new: true }
+  );
+  if (!projectprocessupdate)
+    res.status(404).send({
+      status: 0,
+      data: " Project Process Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectprocessupdate,
+  });
+});
+
+router.put("/completeprojectprocess/:id", async (req, res) => {
+  const projectprocessupdate = await ProjectProcess.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      completed: true,
     },
     { new: true }
   );
