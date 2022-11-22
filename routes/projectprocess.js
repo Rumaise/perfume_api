@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { default: mongoose } = require("mongoose");
 
 const {
   ProjectProcess,
@@ -105,6 +106,126 @@ router.get("/projectprocesscount", (req, res) => {
       res.send({
         status: 1,
         data: projectprocesscount,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+router.get("/listprojectprocessbyprojectid/:id", (req, res) => {
+  ProjectProcess.aggregate([
+    {
+      $match: { project_id: { $eq: mongoose.Types.ObjectId(req.params.id) } },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        as: "projectdetails",
+        let: { project_id: "$project_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$_id", "$$project_id"] } },
+          },
+          {
+            $project: {
+              customer_id: 1,
+              referrence: 1,
+              brandname: 1,
+              productname: 1,
+              completed: 1,
+              quantity: 1,
+              project_datetime: 1,
+              start_datetime: 1,
+              handover_datetime: 1,
+              approved_datetime: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "customer_id",
+              foreignField: "_id",
+              as: "customer_name",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    email: 1,
+                    phone: 1,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "processes",
+        as: "processdetails",
+        let: { id: "$process_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$id"] },
+            },
+          },
+          {
+            $project: {
+              process_name: 1,
+              approvers: 1,
+              notify: 1,
+              mailstat: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        project_id: 1,
+        process_id: 1,
+        projectdetails: 1,
+        processdetails: 1,
+        day: {
+          $trunc: {
+            $divide: [
+              { $subtract: ["$process_end_date", new Date()] },
+              86400000,
+            ],
+          },
+        },
+        testday: {
+          $dateSubtract: {
+            startDate: "$process_end_date",
+            unit: "month",
+            amount: 1,
+          },
+        },
+        process_start_date: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$process_started_date",
+          },
+        },
+        process_end_date: {
+          $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
+        },
+      },
+    },
+    { $sort: { process_end_date: 1 } },
+  ])
+    .then((projectprocess) =>
+      res.send({
+        status: 1,
+        data: projectprocess,
       })
     )
     .catch((error) => {
