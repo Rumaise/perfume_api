@@ -461,6 +461,168 @@ router.get("/projectprocesslistcountbyfromandtodate/:from/:to", (req, res) => {
     });
 });
 
+//api to get the collection count
+router.get("/projectprocesslistbyfromandtodate/:from/:to", (req, res) => {
+  console.log(req.params.from);
+  console.log(req.params.to);
+  ProjectProcess.aggregate([
+    {
+      $match: {
+        process_end_date: { $exists: true },
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        as: "projectdetails",
+        let: { project_id: "$project_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$_id", "$$project_id"] } },
+          },
+          {
+            $project: {
+              customer_id: 1,
+              referrence: 1,
+              brandname: 1,
+              productname: 1,
+              completed: 1,
+              quantity: 1,
+              project_datetime: 1,
+              start_datetime: 1,
+              handover_datetime: 1,
+              approved_datetime: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "customer_id",
+              foreignField: "_id",
+              as: "customer_name",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    email: 1,
+                    phone: 1,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "processes",
+        as: "processdetails",
+        let: { id: "$process_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$id"] },
+            },
+          },
+          {
+            $project: {
+              process_name: 1,
+              approvers: 1,
+              notify: 1,
+              mailstat: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        project_id: 1,
+        process_id: 1,
+        projectdetails: 1,
+        processdetails: 1,
+        day: {
+          $trunc: {
+            $divide: [
+              { $subtract: ["$process_end_date", new Date()] },
+              86400000,
+            ],
+          },
+        },
+        testday: {
+          $dateSubtract: {
+            startDate: "$process_end_date",
+            unit: "month",
+            amount: 1,
+          },
+        },
+        process_start_date: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$process_started_date",
+          },
+        },
+        process_end_date: {
+          $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
+        },
+      },
+    },
+    {
+      $addFields: {
+        convert: {
+          $dateFromString: {
+            dateString: "$process_end_date",
+            format: "%Y-%m-%d",
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        process_start_date: 1,
+        process_end_date: 1,
+        day: 1,
+        projectdetails: {
+          referrence: 1,
+          brandname: 1,
+          handover_datetime: 1,
+          customer_name: {
+            firstname: 1,
+          },
+        },
+        processdetails: {
+          process_name: 1,
+        },
+        convert: 1,
+      },
+    },
+    {
+      $match: {
+        convert: {
+          $gte: new Date(req.params.from),
+          $lte: new Date(req.params.to),
+        },
+      },
+    },
+  ])
+    .then((projectprocess) =>
+      res.send({
+        status: 1,
+        data: projectprocess,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/processlistingbyenddate", (req, res) => {
   ProjectProcess.aggregate([
     {
