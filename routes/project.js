@@ -222,6 +222,105 @@ router.get("/projectslistcountbyyearormonthwise/:year/:status", (req, res) => {
     });
 });
 
+router.get("/projectscompletestatusgraph", (req, res) => {
+  Project.aggregate([
+    {
+      $match: {
+        completed: true,
+        completed_date: { $exists: true },
+        start_datetime: { $exists: true },
+        handover_datetime: { $exists: true },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        referrence: 1,
+        productname: 1,
+        formatted_completed_date: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$completed_date",
+          },
+        },
+        formatted_handover_datetime: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$handover_datetime",
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        convert_handover_datetime: {
+          $dateFromString: {
+            dateString: "$formatted_handover_datetime",
+            format: "%Y-%m-%d",
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        convert_completed_date: {
+          $dateFromString: {
+            dateString: "$formatted_completed_date",
+            format: "%Y-%m-%d",
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        referrence: 1,
+        productname: 1,
+        formatted_completed_date: 1,
+        formatted_handover_datetime: 1,
+        convert_handover_datetime: 1,
+        convert_completed_date: 1,
+        day: {
+          $trunc: {
+            $divide: [
+              {
+                $subtract: [
+                  "$convert_handover_datetime",
+                  "$convert_completed_date",
+                ],
+              },
+              86400000,
+            ],
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        projects_details: {
+          $push: "$$ROOT",
+        },
+        early: { $sum: { $cond: [{ $gt: ["$day", 0] }, 1, 0] } },
+        late: { $sum: { $cond: [{ $lt: ["$day", 0] }, 1, 0] } },
+        ontime: { $sum: { $cond: [{ $eq: ["$day", 0] }, 1, 0] } },
+      },
+    },
+  ])
+    .then((project) =>
+      res.send({
+        status: 1,
+        data: project,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get(
   "/projectslistbypaginate/:status/:page/:count/:term?",
   (req, res) => {
@@ -462,7 +561,8 @@ router.put("/updateproject/:id", async (req, res) => {
     {
       modified_by: req.body.modified_by,
       completed: req.body.completed,
-      $push: { categories_added: req.body.category_id },
+      completed_date: Date.now(),
+      // $push: { categories_added: req.body.category_id },
     },
     { new: true }
   );

@@ -54,6 +54,9 @@ const ProjectSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  completed_date: {
+    type: Date,
+  },
   categories_added: [
     {
       type: mongoose.Schema.Types.ObjectId,
