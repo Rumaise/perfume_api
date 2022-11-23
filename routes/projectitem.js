@@ -185,6 +185,90 @@ router.get("/projectitemslistcountbyfromandtodate/:from/:to", (req, res) => {
     });
 });
 
+router.get("/projectitemslistbyfromandtodate/:from/:to", (req, res) => {
+  console.log(req.params.from);
+  console.log(req.params.to);
+  ProjectItem.aggregate([
+    {
+      $match: {
+        expected_delivery_date: { $exists: true },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        project_id: 1,
+        item_id: 1,
+        available_quantity: 1,
+        required_quantity: 1,
+        order_referrence: 1,
+        expected_delivery_date: 1,
+        formattedDate: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$expected_delivery_date",
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        convert: {
+          $dateFromString: {
+            dateString: "$formattedDate",
+            format: "%Y-%m-%d",
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "project_id",
+        foreignField: "_id",
+        as: "project_details",
+        pipeline: [],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        project_id: 1,
+        item_id: 1,
+        available_quantity: 1,
+        required_quantity: 1,
+        order_referrence: 1,
+        expected_delivery_date: 1,
+        project_details: {
+          referrence: 1,
+        },
+        formattedDate: 1,
+        convert: 1,
+      },
+    },
+    {
+      $match: {
+        convert: {
+          $gte: new Date(req.params.from),
+          $lte: new Date(req.params.to),
+        },
+      },
+    },
+  ])
+    .then((projectitems) =>
+      res.send({
+        status: 1,
+        data: projectitems,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //api to get the collection count for received date
 router.get(
   "/projectitemslistcountbyfromandtodatebyreceiveddate/:from/:to",
