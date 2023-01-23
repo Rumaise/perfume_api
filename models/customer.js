@@ -15,12 +15,12 @@ const CustomerSchema = new mongoose.Schema({
   },
   lastname: {
     type: String,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   email: {
     type: String,
-    minlength: 3,
+    minlength: 0,
     maxlength: 50,
   },
   phone: {
