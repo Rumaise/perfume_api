@@ -49,3 +49,4 @@ router.get("/customertypelist", (req, res) => {
       });
     });
 });
+module.exports = router;
