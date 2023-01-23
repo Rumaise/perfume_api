@@ -28,7 +28,7 @@ const CustomerSchema = new mongoose.Schema({
     unique: true,
     required: true,
     minlength: 3,
-    maxlength: 10,
+    maxlength: 15,
   },
   officecontact: {
     type: String,
