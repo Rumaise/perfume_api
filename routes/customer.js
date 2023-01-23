@@ -17,15 +17,19 @@ router.post("/createcustomer", async (req, res) => {
     lastname: req.body.lastname,
     email: req.body.email,
     phone: req.body.phone,
+    officecontact: req.body.officecontact,
     location: req.body.location,
-    companyname: req.body.companyname,
     address: req.body.address,
+    typeofcustomer: req.body.typeofcustomer,
+    howyouhearaboutus: req.body.howyouhearaboutus,
+    refferedby: req.body.refferedby,
+    companyname: req.body.companyname,
+    licenseno: req.body.licenseno,
     trn: req.body.trn,
     type: req.body.type,
     created_by: req.body.created_by,
     modified_by: req.body.modified_by,
   });
-
   customer
     .save()
     .then((customer) => {

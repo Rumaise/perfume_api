@@ -30,7 +30,30 @@ const CustomerSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 10,
   },
+  officecontact: {
+    type: String,
+    minlength: 0,
+    maxlength: 10,
+  },
   location: {
+    type: String,
+    minlength: 0,
+    maxlength: 50,
+  },
+  address: {
+    type: String,
+    minlength: 0,
+    maxlength: 50,
+  },
+  typeofcustomer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "customertype",
+  },
+  howyouhearaboutus: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "hearaboutmaster",
+  },
+  refferedby: {
     type: String,
     minlength: 0,
     maxlength: 50,
@@ -40,7 +63,7 @@ const CustomerSchema = new mongoose.Schema({
     minlength: 0,
     maxlength: 50,
   },
-  address: {
+  licenseno: {
     type: String,
     minlength: 0,
     maxlength: 50,
