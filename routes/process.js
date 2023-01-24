@@ -94,6 +94,14 @@ router.get("/listprocessbydetails", (req, res) => {
         ],
       },
     },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category_id",
+        foreignField: "_id",
+        as: "category_details",
+      },
+    },
   ])
     .then((processes) =>
       res.send({
