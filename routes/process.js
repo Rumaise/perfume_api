@@ -147,6 +147,40 @@ router.get("/processdropdown/:projectid/:createdby", async (req, res) => {
     });
 });
 
+router.get(
+  "/processdropdownforproject/:projectid/:createdby",
+  async (req, res) => {
+    console.log(req.params.projectid);
+    console.log(req.params.createdby);
+    await Process.find()
+      .then(async (processes) => {
+        var resultarray = [];
+        await processes.forEach((element) => {
+          const data = {
+            project_id: req.params.projectid,
+            created_by: req.params.createdby,
+            process_id: element._id,
+            process_name: element.process_name,
+            selected: false,
+            gesture: true,
+          };
+          console.log(data);
+          resultarray.push(data);
+        });
+        res.send({
+          status: 1,
+          data: resultarray,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
+
 //UPDATE PROJECT BASED ON ID
 router.put("/updateprocess/:id", async (req, res) => {
   console.log(req.body.approvers);
