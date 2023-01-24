@@ -255,6 +255,7 @@ router.get("/listprojectprocessbypaginate/:page/:count", (req, res) => {
                 referrence: 1,
                 brandname: 1,
                 productname: 1,
+                started: 1,
                 completed: 1,
                 quantity: 1,
                 project_datetime: 1,
@@ -337,6 +338,8 @@ router.get("/listprojectprocessbypaginate/:page/:count", (req, res) => {
           process_end_date: {
             $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
           },
+          started: 1,
+          completed: 1,
         },
       },
       { $sort: { process_end_date: 1 } },
