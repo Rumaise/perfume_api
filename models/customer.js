@@ -51,7 +51,7 @@ const CustomerSchema = new mongoose.Schema({
   },
   howyouhearaboutus: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "hearaboutmaster",
+    ref: "howyouhearaboutus",
   },
   refferedby: {
     type: String,
