@@ -88,6 +88,10 @@ const ProjectSchema = new mongoose.Schema({
     enum: ["Y", "N"],
     default: "Y",
   },
+  process_added: {
+    type: Boolean,
+    default: false,
+  },
   created_date: {
     type: Date,
     default: Date.now,

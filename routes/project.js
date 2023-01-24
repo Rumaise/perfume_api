@@ -29,13 +29,13 @@ router.post("/createproject", async (req, res) => {
     created_by: req.body.created_by,
     modified_by: req.body.modified_by,
   });
-
   project
     .save()
     .then((project) => {
       res.send({
         status: 1,
         data: project,
+        process_added: false,
       });
     })
     .catch((error) => {
