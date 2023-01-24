@@ -20,6 +20,7 @@ const projectitemRoute = require("./routes/projectitem");
 const projectmainRoute = require("./routes/projectmain");
 const permissionRoute = require("./routes/userpermission");
 const customerTypeRoute = require("./routes/customertype");
+const howYouHearAboutUs = require("./routes/howyouhearaboutus");
 
 const PORT = process.env.PORT || 3000;
 
@@ -57,6 +58,7 @@ app.use("/projectitem", projectitemRoute);
 app.use("/projectmain", projectmainRoute);
 app.use("/permission", permissionRoute);
 app.use("/customertypemaster", customerTypeRoute);
+app.use("/howyouhearaboutus", howYouHearAboutUs);
 
 //connect to mongodb
 mongoose
