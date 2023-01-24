@@ -20,9 +20,12 @@ router.post("/createproject", async (req, res) => {
     productname: req.body.productname,
     producttype: req.body.producttype,
     variantname: req.body.variantname,
+    type_of_fragrance: req.body.type_of_fragrance,
+    sample_code: req.body.sample_code,
     completed: req.body.completed,
     categories_added: req.body.categories_added,
     quantity: req.body.quantity,
+    note: req.body.note,
     created_by: req.body.created_by,
     modified_by: req.body.modified_by,
   });

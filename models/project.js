@@ -38,6 +38,18 @@ const ProjectSchema = new mongoose.Schema({
     minlength: 0,
     maxlength: 50,
   },
+  type_of_fragrance: {
+    type: String,
+    required: true,
+    minlength: 1,
+    maxlength: 50,
+  },
+  sample_code: {
+    type: String,
+    required: true,
+    minlength: 1,
+    maxlength: 50,
+  },
   start_datetime: {
     type: Date,
   },
@@ -65,6 +77,11 @@ const ProjectSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: true,
+  },
+  note: {
+    type: String,
+    minlength: 0,
+    maxlength: 50,
   },
   active: {
     type: String,
@@ -97,6 +114,8 @@ const validateProject = (project) => {
     brandname: yup.string().min(0).max(50),
     productname: yup.string().required().min(3).max(50),
     variantname: yup.string().min(0).max(50),
+    type_of_fragrance: yup.string().required().min(1).max(50),
+    sample_code: yup.string().required().min(1).max(50),
     quantity: yup.number().required(),
     created_by: yup.string().required(),
   });
