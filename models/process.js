@@ -10,6 +10,10 @@ const ProcessSchema = new mongoose.Schema({
     unique: true,
     minlength: 3,
   },
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "category",
+  },
   approvers: [
     {
       type: mongoose.Schema.Types.ObjectId,

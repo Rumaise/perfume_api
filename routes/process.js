@@ -12,6 +12,7 @@ router.post("/createprocess", async (req, res) => {
     });
   var process = new Process({
     process_name: req.body.process_name,
+    category_id: req.body.category_id,
     approvers: req.body.approvers,
     notify: req.body.notify,
     mailstat: req.body.mailstat,
