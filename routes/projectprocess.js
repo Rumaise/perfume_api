@@ -136,6 +136,7 @@ router.get("/listprojectprocessbyprojectid/:id", (req, res) => {
               referrence: 1,
               brandname: 1,
               productname: 1,
+              started: 1,
               completed: 1,
               quantity: 1,
               project_datetime: 1,
@@ -194,6 +195,7 @@ router.get("/listprojectprocessbyprojectid/:id", (req, res) => {
         process_id: 1,
         projectdetails: 1,
         processdetails: 1,
+        started: 1,
         completed: 1,
         day: {
           $trunc: {
