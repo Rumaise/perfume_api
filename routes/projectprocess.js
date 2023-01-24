@@ -400,6 +400,27 @@ router.put("/completeprojectprocess/:id", async (req, res) => {
   });
 });
 
+router.put("/startprojectprocess/:id", async (req, res) => {
+  const projectprocessupdate = await ProjectProcess.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      process_start_date: req.body.process_start_date,
+      started: true,
+    },
+    { new: true }
+  );
+  if (!projectprocessupdate)
+    res.status(404).send({
+      status: 0,
+      data: " Project Process Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectprocessupdate,
+  });
+});
+
 //api to get the collection count
 router.get("/projectprocesslistcountbyfromandtodate/:from/:to", (req, res) => {
   console.log(req.params.from);
