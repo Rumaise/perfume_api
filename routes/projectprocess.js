@@ -405,8 +405,12 @@ router.put("/startprojectprocess/:id", async (req, res) => {
     req.params.id,
     {
       modified_by: req.body.modified_by,
-      process_started_date: req.body.process_started_date,
       started: true,
+    },
+    {
+      $set: {
+        process_started_date: req.body.process_started_date,
+      },
     },
     { new: true }
   );
