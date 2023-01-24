@@ -42,7 +42,7 @@ router.post("/createprojectmain", async (req, res) => {
     });
 });
 
-//GET ALL PROJECTS MAIN
+//GET ALL PROJECTS MAIN DATA
 
 router.get("/projectmainlist", (req, res) => {
   ProjectMain.find()
