@@ -24,11 +24,11 @@ const ProjectProcessSchema = new mongoose.Schema({
   },
   process_started_date: {
     type: Date,
-    default: Date.now,
+    // default: Date.now,
   },
   process_end_date: {
     type: Date,
-    default: addDays(7),
+    // default: addDays(7),
   },
   started: {
     type: Boolean,
