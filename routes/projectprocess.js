@@ -420,6 +420,21 @@ router.put("/updateprojectprocessenddate/:id", async (req, res) => {
   });
 });
 
+router.get("/deleteprocess/:id", async (req, res) => {
+  const projectprocessdelete = await ProjectProcess.findByIdAndRemove(
+    req.params.id
+  );
+  if (!projectprocessdelete)
+    res.status(404).send({
+      status: 0,
+      data: " Project Process Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectprocessdelete,
+  });
+});
+
 router.put("/completeprojectprocess/:id", async (req, res) => {
   const projectprocessupdate = await ProjectProcess.findByIdAndUpdate(
     req.params.id,
