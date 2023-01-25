@@ -85,7 +85,7 @@ router.post("/addprojectprocessbyproject", async (req, res) => {
   const projectprocess = req.body.projectprocess;
   var projectprocesslist = [];
   await projectprocess.forEach(async (element) => {
-    if (element.selected && !element.gesture) {
+    if (element.selected) {
       var data = {
         project_id: element.project_id,
         process_id: element.process_id,
