@@ -22,6 +22,8 @@ router.post("/createproject", async (req, res) => {
     variantname: req.body.variantname,
     type_of_fragrance: req.body.type_of_fragrance,
     sample_code: req.body.sample_code,
+    payment_terms_id: req.body.payment_terms_id,
+    delivery_terms_id: req.body.delivery_terms_id,
     completed: req.body.completed,
     categories_added: req.body.categories_added,
     quantity: req.body.quantity,

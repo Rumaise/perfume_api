@@ -50,6 +50,14 @@ const ProjectSchema = new mongoose.Schema({
     minlength: 1,
     maxlength: 50,
   },
+  payment_terms_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "paymentterms",
+  },
+  delivery_terms_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "deliveryterms",
+  },
   start_datetime: {
     type: Date,
   },
@@ -77,6 +85,7 @@ const ProjectSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
   approved: {
     type: Boolean,
     default: false,
