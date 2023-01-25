@@ -300,6 +300,41 @@ router.get("/listprojectprocessbyprojectidandcategory/:id", (req, res) => {
       $unwind: "$processdetails",
     },
     {
+      $project: {
+        project_id: 1,
+        process_id: 1,
+        projectdetails: 1,
+        processdetails: 1,
+        started: 1,
+        completed: 1,
+        day: {
+          $trunc: {
+            $divide: [
+              { $subtract: ["$process_end_date", new Date()] },
+              86400000,
+            ],
+          },
+        },
+        testday: {
+          $dateSubtract: {
+            startDate: "$process_end_date",
+            unit: "month",
+            amount: 1,
+          },
+        },
+        process_start_date: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$process_started_date",
+          },
+        },
+        process_end_date: {
+          $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
+        },
+      },
+    },
+    { $sort: { process_end_date: 1 } },
+    {
       $group: {
         _id: { category: "$processdetails.category_id" },
         details_data: { $push: "$$ROOT" },
