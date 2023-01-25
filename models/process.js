@@ -30,6 +30,10 @@ const ProcessSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  sort_order: {
+    type: Number,
+    default: -1,
+  },
   created_date: {
     type: Date,
     default: Date.now,
