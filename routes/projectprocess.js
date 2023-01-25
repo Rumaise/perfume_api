@@ -322,15 +322,8 @@ router.get("/listprojectprocessbyprojectidandcategory/:id", (req, res) => {
             amount: 1,
           },
         },
-        process_start_date: {
-          $dateToString: {
-            format: "%Y-%m-%d",
-            date: "$process_started_date",
-          },
-        },
-        process_end_date: {
-          $dateToString: { format: "%Y-%m-%d", date: "$process_end_date" },
-        },
+        process_start_date: 1,
+        process_end_date: 1,
       },
     },
     { $sort: { process_end_date: 1 } },
