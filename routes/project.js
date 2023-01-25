@@ -580,6 +580,29 @@ router.put("/updateproject/:id", async (req, res) => {
   });
 });
 
+//UPDATE PROJECT BASED ON ID
+router.put("/updatepricingapproval/:id", async (req, res) => {
+  const projectupdate = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      pricing_approval: req.body.pricingapproval,
+      pricing_approved_datetime: Date.now(),
+      // $push: { categories_added: req.body.category_id },
+    },
+    { new: true }
+  );
+  if (!projectupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Project Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectupdate,
+  });
+});
+
 router.put("/updateprojectstartdate/:id", async (req, res) => {
   const projectupdate = await Project.findByIdAndUpdate(
     req.params.id,
