@@ -121,6 +121,9 @@ router.get("/listprocessbydetailsbycategory", (req, res) => {
     {
       $unwind: "$category_details",
     },
+    {
+      $sort: { "category_details.sort_order": 1 },
+    },
   ])
     .then((processes) =>
       res.send({
