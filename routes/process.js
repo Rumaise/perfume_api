@@ -162,6 +162,8 @@ router.get(
             process_id: element._id,
             process_name: element.process_name,
             selected: false,
+            started: element.started,
+            completed: element.completed,
             gesture: true,
           };
           console.log(data);
