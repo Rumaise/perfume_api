@@ -357,6 +357,9 @@ router.get("/listprojectprocessbyprojectidandcategory/:id", (req, res) => {
     {
       $unwind: "$categorydetails",
     },
+    {
+      $sort: { "categorydetails.sort_order": 1 },
+    },
   ])
     .then((projectprocess) =>
       res.send({
