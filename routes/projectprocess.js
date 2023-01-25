@@ -80,6 +80,44 @@ router.post("/addprojectprocess", async (req, res) => {
     });
 });
 
+//INSERT MULTIPLE PROJECT PROCESS
+router.post("/addprojectprocessbyproject", async (req, res) => {
+  const projectprocess = req.body.projectprocess;
+  var projectprocesslist = [];
+  await projectprocess.forEach(async (element) => {
+    if (element.selected && !element.gesture) {
+      var data = {
+        project_id: element.project_id,
+        process_id: element.process_id,
+        selected: element.selected,
+        created_by: element.created_by,
+      };
+      const error = await validateProjectProcess(data);
+      if (error.message) {
+        res.status(400).send({
+          status: 0,
+          data: error.message,
+        });
+      } else {
+        projectprocesslist.push(data);
+      }
+    }
+  });
+  await ProjectProcess.insertMany(projectprocesslist)
+    .then((projectprocess) => {
+      res.send({
+        status: 1,
+        data: projectprocess,
+      });
+    })
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error,
+      });
+    });
+});
+
 //GET ALL PROJECT PROCESSES
 
 router.get("/listprojectprocess", (req, res) => {
