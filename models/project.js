@@ -69,6 +69,14 @@ const ProjectSchema = new mongoose.Schema({
   pricing_approved_datetime: {
     type: Date,
   },
+  complete_payment: {
+    type: Boolean,
+    default: false,
+  },
+  ready_for_shipment: {
+    type: Boolean,
+    default: false,
+  },
   approved: {
     type: Boolean,
     default: false,
