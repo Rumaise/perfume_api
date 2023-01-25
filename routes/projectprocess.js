@@ -277,6 +277,73 @@ router.get("/listprojectprocessbyprojectid/:id", (req, res) => {
     });
 });
 
+router.get("/listprojectprocessbyprojectidandcategory/:id", (req, res) => {
+  ProjectProcess.aggregate([
+    {
+      $match: { project_id: { $eq: mongoose.Types.ObjectId(req.params.id) } },
+    },
+    {
+      $lookup: {
+        from: "processes",
+        as: "processdetails",
+        let: { id: "$process_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$id"] },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: "$processdetails",
+    },
+    {
+      $group: {
+        _id: { category: "$processdetails.category_id" },
+        details_data: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        category_id: "$_id.category",
+        details_data: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        as: "categorydetails",
+        let: { id: "$category_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$id"] },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: "$categorydetails",
+    },
+  ])
+    .then((projectprocess) =>
+      res.send({
+        status: 1,
+        data: projectprocess,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/listprojectprocessbypaginate/:page/:count", (req, res) => {
   ProjectProcess.aggregatePaginate(
     ProjectProcess.aggregate([
