@@ -163,6 +163,7 @@ router.get(
             process_name: element.process_name,
             selected: false,
             gesture: true,
+            started: false,
           };
           console.log(data);
           resultarray.push(data);
