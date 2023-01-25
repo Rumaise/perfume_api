@@ -54,6 +54,88 @@ router.get("/listprocess", (req, res) => {
     });
 });
 
+router.get("/listprocessbydetailsbycategory", (req, res) => {
+  Process.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "approvers",
+        foreignField: "_id",
+        as: "approverslist",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              firstname: 1,
+              lastname: 1,
+              email: 1,
+              phone: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "notify",
+        foreignField: "_id",
+        as: "notifierslist",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              firstname: 1,
+              lastname: 1,
+              email: 1,
+              phone: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $sort: { sort_order: -1 },
+    },
+    {
+      $group: {
+        _id: { category: "$category_id" },
+        process_details_data: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        category_id: "$_id.category",
+        process_details_data: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category_id",
+        foreignField: "_id",
+        as: "category_details",
+      },
+    },
+    {
+      $unwind: "$category_details",
+    },
+  ])
+    .then((processes) =>
+      res.send({
+        status: 1,
+        data: processes,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 router.get("/listprocessbydetails", (req, res) => {
   Process.aggregate([
     {
@@ -194,6 +276,28 @@ router.put("/updateprocess/:id", async (req, res) => {
         approvers: req.body.approvers,
         notify: req.body.notify,
       },
+      modified_by: req.body.modified_by,
+    },
+    { new: true }
+  );
+  if (!processupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Process details update failed",
+    });
+  res.send({
+    status: 1,
+    data: processupdate,
+  });
+});
+
+//UPDATE PROJECT SORT ORDER BASED ON ID
+router.put("/updateprocesssortorder/:id", async (req, res) => {
+  console.log(req.body.sortorder);
+  const processupdate = await Process.findByIdAndUpdate(
+    req.params.id,
+    {
+      sort_order: req.body.sortorder,
       modified_by: req.body.modified_by,
     },
     { new: true }
