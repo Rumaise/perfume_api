@@ -85,7 +85,12 @@ const ProjectSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-
+  invoiceid: {
+    type: String,
+  },
+  deliveryid: {
+    type: String,
+  },
   approved: {
     type: Boolean,
     default: false,

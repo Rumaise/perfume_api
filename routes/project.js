@@ -689,6 +689,46 @@ router.put("/updatereadyforshipment/:id", async (req, res) => {
   });
 });
 
+router.put("/updateinvoiceid/:id", async (req, res) => {
+  const projectupdate = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      invoiceid: req.body.invoiceid,
+    },
+    { new: true }
+  );
+  if (!projectupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Project Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectupdate,
+  });
+});
+
+router.put("/updatedeliveryid/:id", async (req, res) => {
+  const projectupdate = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      deliveryid: req.body.deliveryid,
+    },
+    { new: true }
+  );
+  if (!projectupdate)
+    res.status(404).send({
+      status: 0,
+      data: "Project Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectupdate,
+  });
+});
+
 router.put("/updatepaymentcomplete/:id", async (req, res) => {
   const projectupdate = await Project.findByIdAndUpdate(
     req.params.id,
