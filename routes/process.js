@@ -95,7 +95,7 @@ router.get("/listprocessbydetailsbycategory", (req, res) => {
       },
     },
     {
-      $sort: { sort_order: -1 },
+      $sort: { sort_order: 1 },
     },
     {
       $group: {
