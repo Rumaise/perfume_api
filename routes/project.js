@@ -4,7 +4,7 @@ const router = express.Router();
 const { Project, validateProject } = require("../models/project");
 const { Process } = require("../models/process");
 
-//POST : CREATE A NEW PROJECT
+//POST : CREATE A NEW PROJECT UPDATED
 
 router.post("/createproject", async (req, res) => {
   const error = await validateProject(req.body);
