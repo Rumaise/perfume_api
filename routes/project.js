@@ -338,6 +338,28 @@ router.get(
           },
           {
             $lookup: {
+              from: "paymentterms",
+              localField: "payment_terms_id",
+              foreignField: "_id",
+              as: "paymentterms_details",
+            },
+          },
+          {
+            $unwind: "$paymentterms_details",
+          },
+          {
+            $lookup: {
+              from: "deliveryterms",
+              localField: "delivery_terms_id",
+              foreignField: "_id",
+              as: "deliveryterms_details",
+            },
+          },
+          {
+            $unwind: "$deliveryterms_details",
+          },
+          {
+            $lookup: {
               from: "customers",
               as: "customerdetails",
               let: { customer_id: "$customer_id" },
@@ -407,6 +429,7 @@ router.get(
               ],
             },
           },
+
           {
             $sort: { created_date: -1 },
           },
@@ -433,6 +456,28 @@ router.get(
         Project.aggregate([
           {
             $match: { completed: req.params.status === "true" ? true : false },
+          },
+          {
+            $lookup: {
+              from: "paymentterms",
+              localField: "payment_terms_id",
+              foreignField: "_id",
+              as: "paymentterms_details",
+            },
+          },
+          {
+            $unwind: "$paymentterms_details",
+          },
+          {
+            $lookup: {
+              from: "deliveryterms",
+              localField: "delivery_terms_id",
+              foreignField: "_id",
+              as: "deliveryterms_details",
+            },
+          },
+          {
+            $unwind: "$deliveryterms_details",
           },
           {
             $lookup: {
