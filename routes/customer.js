@@ -125,9 +125,60 @@ router.get("/customerscount", (req, res) => {
     });
 });
 
+// router.get("/customerslistbypaginate/:page/:count", (req, res) => {
+//   Customer.aggregatePaginate(
+//     Customer.aggregate([{ $sort: { firstname: 1 } }]),
+//     { page: req.params.page, limit: req.params.count }
+//   )
+//     .then((customers) =>
+//       res.send({
+//         status: 1,
+//         data: customers,
+//       })
+//     )
+//     .catch((error) => {
+//       res.status(500).send({
+//         status: 0,
+//         data: error.message,
+//       });
+//     });
+// });
+
 router.get("/customerslistbypaginate/:page/:count", (req, res) => {
   Customer.aggregatePaginate(
-    Customer.aggregate([{ $sort: { firstname: 1 } }]),
+    Customer.aggregate([
+      {
+        $project: {
+          _id: 1,
+          salutation: 1,
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          phone: 1,
+          officecontact: 1,
+          location: 1,
+          address: 1,
+          typeofcustomer: 1,
+          howyouhearaboutus: 1,
+          refferedby: 1,
+          companyname: 1,
+          licenseno: 1,
+          trn: 1,
+          type: 1,
+          active: 1,
+          created_by: 1,
+          modified_by: 1,
+          created_date: 1,
+          modified_date: 1,
+          casesensitive: {
+            $toLower: "$firstname",
+          },
+        },
+      },
+      {
+        $sort: { casesensitive: 1 },
+      },
+    ]),
     { page: req.params.page, limit: req.params.count }
   )
     .then((customers) =>
