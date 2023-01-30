@@ -49,4 +49,17 @@ router.get("/usergroupslist", (req, res) => {
     });
 });
 
+router.get("/usergroupbyid/:id", async (req, res) => {
+  const usergroupdetails = await UserGroup.findById(req.params.id);
+  if (!usergroupdetails)
+    res.status(404).send({
+      status: 0,
+      data: "User Group Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: usergroupdetails,
+  });
+});
+
 module.exports = router;
