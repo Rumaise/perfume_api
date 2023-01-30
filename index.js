@@ -23,6 +23,7 @@ const customerTypeRoute = require("./routes/customertype");
 const howYouHearAboutUs = require("./routes/howyouhearaboutus");
 const paymentTermsRoute = require("./routes/paymentterm");
 const deliveryTermsRoute = require("./routes/deliveryterms");
+const volumeRoute = require("./routes/volume");
 
 const PORT = process.env.PORT || 3000;
 
@@ -63,6 +64,7 @@ app.use("/customertypemaster", customerTypeRoute);
 app.use("/howyouhearaboutus", howYouHearAboutUs);
 app.use("/paymentterm", paymentTermsRoute);
 app.use("/deliveryterm", deliveryTermsRoute);
+app.use("/volume", volumeRoute);
 
 //connect to mongodb
 mongoose
