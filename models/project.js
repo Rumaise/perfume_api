@@ -53,10 +53,12 @@ const ProjectSchema = new mongoose.Schema({
   payment_terms_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "paymentterms",
+    default: null,
   },
   delivery_terms_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "deliveryterms",
+    default: null,
   },
   start_datetime: {
     type: Date,
