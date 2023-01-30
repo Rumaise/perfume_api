@@ -345,7 +345,10 @@ router.get(
             },
           },
           {
-            $unwind: "$paymentterms_details",
+            $unwind: {
+              path: "$paymentterms_details",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -356,7 +359,10 @@ router.get(
             },
           },
           {
-            $unwind: "$deliveryterms_details",
+            $unwind: {
+              path: "$deliveryterms_details",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -465,7 +471,10 @@ router.get(
             },
           },
           {
-            $unwind: "$paymentterms_details",
+            $unwind: {
+              path: "$paymentterms_details",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -476,7 +485,10 @@ router.get(
             },
           },
           {
-            $unwind: "$deliveryterms_details",
+            $unwind: {
+              path: "$deliveryterms_details",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
