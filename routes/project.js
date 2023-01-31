@@ -151,6 +151,87 @@ router.get(
   }
 );
 
+//api to get the collection count
+router.get(
+  "/projectslistcountbyfromandtodatemaster/:from/:to/:status",
+  (req, res) => {
+    console.log(req.params.from);
+    console.log(req.params.to);
+    Project.aggregate([
+      {
+        $match: {
+          completed: req.params.status === "true" ? true : false,
+          handover_datetime: { $exists: true },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          referrence: 1,
+          brandname: 1,
+          productname: 1,
+          type_of_fragrance: 1,
+          project_datetime: 1,
+          approved_datetime: 1,
+          start_datetime: 1,
+          handover_datetime: 1,
+          formattedDate: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$handover_datetime",
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          convert: {
+            $dateFromString: {
+              dateString: "$formattedDate",
+              format: "%Y-%m-%d",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          formattedDate: 1,
+          referrence: 1,
+          brandname: 1,
+          productname: 1,
+          type_of_fragrance: 1,
+          project_datetime: 1,
+          approved_datetime: 1,
+          start_datetime: 1,
+          handover_datetime: 1,
+          convert: 1,
+        },
+      },
+      {
+        $match: {
+          convert: {
+            $gte: new Date(req.params.from),
+            $lte: new Date(req.params.to),
+          },
+        },
+      },
+    ])
+      .then((project) =>
+        res.send({
+          status: 1,
+          data: project,
+        })
+      )
+      .catch((error) => {
+        res.status(500).send({
+          status: 0,
+          data: error.message,
+        });
+      });
+  }
+);
+
 router.get("/totalprojectscount", (req, res) => {
   Project.estimatedDocumentCount()
     .then((count) =>
