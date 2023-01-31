@@ -518,6 +518,26 @@ router.put("/updateprojectprocessenddate/:id", async (req, res) => {
   });
 });
 
+router.put("/updateprojectprocessstartdate/:id", async (req, res) => {
+  const projectprocessupdate = await ProjectProcess.findByIdAndUpdate(
+    req.params.id,
+    {
+      modified_by: req.body.modified_by,
+      process_started_date: req.body.process_started_date,
+    },
+    { new: true }
+  );
+  if (!projectprocessupdate)
+    res.status(404).send({
+      status: 0,
+      data: " Project Process Details Not Found",
+    });
+  res.send({
+    status: 1,
+    data: projectprocessupdate,
+  });
+});
+
 router.get("/deleteprocess/:id", async (req, res) => {
   const projectprocessdelete = await ProjectProcess.findByIdAndRemove(
     req.params.id
