@@ -157,6 +157,55 @@ router.get("/loadsubcategorymaster", (req, res) => {
 });
 
 // GET ALL RECORDS JOINED
+router.get("/loadallcategorymasterdata", (req, res) => {
+  Category.aggregate([
+    {
+      $lookup: {
+        from: "subcategories",
+        as: "subcategory",
+        let: { category_id: "$_id" },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ["$category_id", "$$category_id"] } },
+          },
+          {
+            $project: {
+              _id: 1,
+              sub_category_name: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        category_name: 1,
+        subcategory: 1,
+      },
+    },
+    {
+      $unwind: {
+        path: "$subcategories",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ])
+    .then((master) =>
+      res.send({
+        status: 1,
+        data: master,
+      })
+    )
+    .catch((error) => {
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
+// GET ALL RECORDS JOINED
 router.get("/loadcategorybyid/:id", (req, res) => {
   Category.aggregate([
     {

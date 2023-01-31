@@ -56,6 +56,81 @@ router.get("/subcategoryitemslist", (req, res) => {
     });
 });
 
+router.get("/loadall", (req, res) => {
+  const response = SubCategoryItems.aggregate([
+    {
+      $group: {
+        _id: { sub_category_id: "$sub_category_id" },
+        details_data: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $project: {
+        sub_category_id: "$_id.sub_category_id",
+        details_data: 1,
+        _id: 0,
+      },
+    },
+    {
+      $lookup: {
+        from: "subcategories",
+        localField: "sub_category_id",
+        foreignField: "_id",
+        as: "sub_category_details",
+      },
+    },
+    {
+      $unwind: {
+        path: "$sub_category_details",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $group: {
+        _id: { category_id: "$sub_category_details.category_id" },
+        category_details_data: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $project: {
+        category_details_data: 1,
+        category_id: "$_id.category_id",
+        _id: 0,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category_id",
+        foreignField: "_id",
+        as: "category_details",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category_details",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ]);
+  response
+    .exec()
+    .then((result) => {
+      console.log(result);
+      res.send({
+        status: 1,
+        data: result,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({
+        status: 0,
+        data: error.message,
+      });
+    });
+});
+
 //GET THE SUB CATEGORY ITEMS BY ID
 router.get("/:id", async (req, res) => {
   const subcategoryitemdetails = await SubCategoryItems.findById(req.params.id);
